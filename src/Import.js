@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import { Chessboard } from "react-chessboard";
 import Chess from "chess";
 import PuzzleDisplay from './PuzzleDisplay.js';
@@ -22,8 +22,6 @@ export default function Import() {
         let date = new Date('January 1, 2023 06:00:00');
         let month = ("0" + (date.getMonth() + 1)).slice(-2);
         console.log(month);
-
-
 
         const chess_url = new URL('https://api.chess.com/pub/player/' + username + '/games/2023/');
         // const chess_url1 = new URL('https://api.chess.com/pub/player/sadavar/games/2023/04');
@@ -53,11 +51,19 @@ export default function Import() {
                 continue;
             }
         }
-        getTactics(pgns);
+        let size = (pgns.games.length > 10) ? 10 : pgns.games.length;
+        var tactics_found = [];
+        for (var i = 0; i < size; i++) {
+            let t = await getTactics(pgns.games[i].pgn);
+            tactics_found = tactics_found.concat(t);
+        }
+        console.log("tactics loaded!");
+        console.log(tactics_found);
+        setTacticsLoaded(true);
+        setTactics(tactics_found);
     };
 
-    async function getTactics(pgns) {
-        let pgn = pgns.games[0].pgn;
+    async function getTactics(pgn) {
         console.log("getting tactics of: " + pgn);
 
         const url = new URL('https://chess-trainer-python-b932ead51c12.herokuapp.com/getTactics');
@@ -67,10 +73,9 @@ export default function Import() {
         url.searchParams.append('pgns', pgn);
         const res = await fetch(url);
         const tactics = res.json();
-        setTactics(await tactics);
+        // setTactics(tactics + await tactics);
         console.log("tactics found: " + await tactics);
-        await tactics.then(setTacticsLoaded(true)).then(console.log("tactics loaded!"));
-
+        return tactics;
     }
 
     function displayTactics() {
