@@ -1,16 +1,15 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { Chessboard } from "react-chessboard";
 import Chess from "chess";
 import PuzzleDisplay from './PuzzleDisplay.js';
-
-
+import { AppContext } from './AppContext';
 
 export default function Import() {
     const [username, setUsername] = useState('');
     var [pgns, setPGNs] = useState([]);
     var [tactics, setTactics] = useState([]);
     var [tacticsLoaded, setTacticsLoaded] = useState(false);
-
+    const { counter, setCounter } = useContext(AppContext);
 
     async function handleGenerate() {
         console.log("generating");
@@ -49,8 +48,6 @@ export default function Import() {
     function displayTactics() {
         if (tacticsLoaded) {
             return <PuzzleDisplay FEN_array={tactics} />;
-        } else {
-            return <h1> not loaded </h1>;
         }
     }
 

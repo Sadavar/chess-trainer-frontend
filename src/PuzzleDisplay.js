@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import { Chessboard } from "react-chessboard";
 import Puzzle from './Puzzle.js'
 import Chess from "chess";
@@ -12,6 +12,10 @@ export default function PuzzleDisplay({ FEN_array }) {
         puzzles.push(<Puzzle start_FEN={FEN_array[i]} end_FEN={FEN_array[i + 1]} />);
     }
     const { counter, setCounter } = useContext(AppContext);
+
+    useEffect(() => {
+        setCounter(0);
+    }, [FEN_array])
 
     return (
         <div>
