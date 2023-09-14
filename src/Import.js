@@ -20,16 +20,16 @@ export default function Import() {
     async function getPGNs() {
         console.log("getting pgns of: " + username);
         let date = new Date('January 1, 2023 06:00:00');
-        let month = ("0" + (date.getMonth() + 1)).slice(-2);
-        console.log(month);
 
         const chess_url = new URL('https://api.chess.com/pub/player/' + username + '/games/2023/');
         // const chess_url1 = new URL('https://api.chess.com/pub/player/sadavar/games/2023/04');
         var data_retreived = false;
         var pgns;
         while (!data_retreived) {
+            let month = ("0" + (date.getMonth() + 1)).slice(-2);
+            console.log(month);
             if (month == 13) {
-                console.log("no games found");
+                console.log("no games found this year");
                 return;
             }
             try {
