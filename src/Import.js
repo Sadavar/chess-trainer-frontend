@@ -51,7 +51,7 @@ export default function Import() {
                 continue;
             }
         }
-        let size = (pgns.games.length > 1) ? 1 : pgns.games.length;
+        let size = (pgns.games.length > 10) ? 10 : pgns.games.length;
         var tactics_found = [];
         for (var i = 0; i < size; i++) {
             let t = await getTactics(pgns.games[i].pgn);
