@@ -38,6 +38,15 @@ export default function Puzzle({ start_FEN, end_FEN }) {
     function makeAMove(move) {
         console.log("game before:" + game.fen());
 
+        // Test if move is illegal
+        try {
+            let copy = new Chess(game.fen());
+            let res = copy.move(move);
+        } catch (error) {
+            console.log("error");
+            return;
+        }
+
         game.move(move);
         setGameFEN(game.fen());
 
@@ -61,9 +70,14 @@ export default function Puzzle({ start_FEN, end_FEN }) {
         setGameState("");
     }
 
+    let analysis_link = "https://lichess.org/analysis/" + game_FEN;
+
+
+
     return (
         <div>
             <h2> {game_state} </h2>
+            <h4><a href={analysis_link}>Analysis Board</a></h4>
 
             <div style={{ width: 500 }}>
                 <Chessboard
