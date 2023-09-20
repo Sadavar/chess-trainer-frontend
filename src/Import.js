@@ -19,19 +19,23 @@ export default function Import() {
 
     async function getPGNs() {
         console.log("getting pgns of: " + username);
-        let date = new Date('January 1, 2023 06:00:00');
 
-        const chess_url = new URL('https://api.chess.com/pub/player/' + username + '/games/2023/');
+        var date = new Date();
+        var current_year = date.getFullYear();
         // const chess_url1 = new URL('https://api.chess.com/pub/player/sadavar/games/2023/04');
         var data_retreived = false;
         var pgns;
         while (!data_retreived) {
-            let month = ("0" + (date.getMonth() + 1)).slice(-2);
-            console.log(month);
-            if (month == 13) {
-                console.log("no games found this year");
+            if (date.getMonth() == 0) {
+                if (date.getFullYear() != current_year - 2) {
+                    date.setFullYear(date.getFullYear() - 1);
+                    date.setMonth(11);
+                }
                 return;
             }
+            var chess_url = new URL('https://api.chess.com/pub/player/' + username + '/games/' + date.getFullYear() + '/');
+            let month = ("0" + (date.getMonth() + 1)).slice(-2);
+            console.log(month);
             try {
                 const res = await fetch(chess_url + month);
                 pgns = await res.json();
@@ -39,7 +43,7 @@ export default function Import() {
                 console.log(pgns);
                 if (pgns.games.length == 0) {
                     console.log("no games found");
-                    date.setMonth(date.getMonth() + 1);
+                    date.setMonth(date.getMonth() - 1);
                 } else {
                     data_retreived = true;
                 }
@@ -47,8 +51,7 @@ export default function Import() {
             catch (error) {
                 console.log("error");
                 console.log(error);
-                month++;
-                continue;
+                return;
             }
         }
         let size = (pgns.games.length > 10) ? 10 : pgns.games.length;
