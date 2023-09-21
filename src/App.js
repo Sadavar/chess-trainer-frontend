@@ -4,17 +4,17 @@ import { useState, createContext } from "react";
 import { AppContext } from './AppContext';
 
 function App() {
-  const [counter, setCounter] = useState(0);
+  const [puzzle_counter, setPuzzleCounter] = useState(0);
 
   // replace console.* for disable log on production
-  console.log = () => { }
-  console.error = () => { }
-  console.debug = () => { }
+  // console.log = () => { }
+  // console.error = () => { }
+  // console.debug = () => { }
 
 
   return (
     <>
-      <AppContext.Provider value={{ counter, setCounter }}>
+      <AppContext.Provider value={{ puzzle_counter, setPuzzleCounter }}>
         <Import />
       </AppContext.Provider>
     </>

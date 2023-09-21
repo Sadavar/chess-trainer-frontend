@@ -11,17 +11,17 @@ export default function PuzzleDisplay({ FEN_array }) {
     for (var i = 0; i < FEN_array.length; i += 2) {
         puzzles.push(<Puzzle start_FEN={FEN_array[i]} end_FEN={FEN_array[i + 1]} />);
     }
-    const { counter, setCounter } = useContext(AppContext);
+    const { puzzle_counter, setPuzzleCounter } = useContext(AppContext);
 
     useEffect(() => {
-        setCounter(0);
+        setPuzzleCounter(0);
     }, [FEN_array])
 
     return (
         <div>
             <h2>Puzzles</h2>
-            {puzzles[counter]}
-            <button onClick={() => setCounter(counter + 1)}>Next Puzzle</button>
+            {puzzles[puzzle_counter]}
+            <button onClick={() => setCounter(puzzle_counter + 1)}>Next Puzzle</button>
         </div>
     );
 }

@@ -9,7 +9,7 @@ export default function Import() {
     var [pgns, setPGNs] = useState([]);
     var [tactics, setTactics] = useState([]);
     var [tacticsLoaded, setTacticsLoaded] = useState(false);
-    const { counter, setCounter } = useContext(AppContext);
+    const { puzzle_counter, setPuzzleCounter } = useContext(AppContext);
 
     async function handleGenerate() {
         console.log("generating");
