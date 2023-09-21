@@ -21,7 +21,7 @@ export default function PuzzleDisplay({ FEN_array }) {
         <div>
             <h2>Puzzles</h2>
             {puzzles[puzzle_counter]}
-            <button onClick={() => setCounter(puzzle_counter + 1)}>Next Puzzle</button>
+            <button onClick={() => setPuzzleCounter(puzzle_counter + 1)}>Next Puzzle</button>
         </div>
     );
 }
