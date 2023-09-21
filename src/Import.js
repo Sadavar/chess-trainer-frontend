@@ -71,12 +71,19 @@ export default function Import() {
 
         const url = new URL('https://chess-trainer-python-b932ead51c12.herokuapp.com/getTactics');
         // const url2 = new URL('https://chess-trainer-backend-sadavar-6c10d1a552e9.herokuapp.com/getTactics');
-        // const url3 = new URL('http://127.0.0.1:5000/getTactics');
+        // const url = new URL('http://127.0.0.1:5000/getTactics');
 
-        url.searchParams.append('pgns', pgn);
-        const res = await fetch(url);
+        const res = await fetch(url, {
+            method: "POST", // *GET, POST, PUT, DELETE, etc.
+            mode: "cors", // no-cors, *cors, same-origin
+            credentials: "same-origin", // include, *same-origin, omit
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(pgn), // body data type must match "Content-Type" header
+        });
+
         const tactics = res.json();
-        // setTactics(tactics + await tactics);
         console.log("tactics found: " + await tactics);
         return tactics;
     }
