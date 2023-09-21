@@ -70,7 +70,7 @@ export default function Puzzle({ start_FEN, end_FEN }) {
         setGameState("");
     }
 
-    let analysis_link = "https://lichess.org/analysis/" + game_FEN;
+    let analysis_link = "https://lichess.org/analysis/" + start_FEN;
 
 
 
