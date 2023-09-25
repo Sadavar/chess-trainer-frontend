@@ -73,9 +73,12 @@ export default function Import() {
         // const url = new URL('http://127.0.0.1:5000/getTactics');
 
         var payload = {
-            "pgn": pgn,
-            "username": username
-        }
+            pgn: pgn,
+            username: username
+        };
+
+        var data = new FormData();
+        data.append("json", JSON.stringify(payload));
 
         const res = await fetch(url, {
             method: "POST", // *GET, POST, PUT, DELETE, etc.
@@ -84,7 +87,7 @@ export default function Import() {
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify(payload), // body data type must match "Content-Type" header
+            body: data, // body data type must match "Content-Type" header
         });
 
         const tactics = res.json();
