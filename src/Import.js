@@ -54,7 +54,7 @@ export default function Import() {
                 return;
             }
         }
-        let size = (pgns.games.length > 3) ? 3 : pgns.games.length;
+        let size = (pgns.games.length > 10) ? 10 : pgns.games.length;
         var tactics_found = [];
         for (var i = 0; i < size; i++) {
             let t = await getTactics(pgns.games[i].pgn);
@@ -77,9 +77,6 @@ export default function Import() {
             username: username
         };
 
-        var data = new FormData();
-        data.append("json", JSON.stringify(payload));
-
         const res = await fetch(url, {
             method: "POST", // *GET, POST, PUT, DELETE, etc.
             mode: "cors", // no-cors, *cors, same-origin
@@ -87,7 +84,7 @@ export default function Import() {
             headers: {
                 "Content-Type": "application/json",
             },
-            body: data, // body data type must match "Content-Type" header
+            body: JSON.stringify(payload), // body data type must match "Content-Type" header
         });
 
         const tactics = res.json();
