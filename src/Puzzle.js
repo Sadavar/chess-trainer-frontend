@@ -5,7 +5,7 @@ import * as ChessJS from "chess.js";
 
 const Chess = typeof ChessJS === "function" ? ChessJS : ChessJS.Chess;
 
-export default function Puzzle({ start_FEN, end_FEN }) {
+export default function Puzzle({ start_FEN, end_FEN, turn_color }) {
     const [game, setGame] = useState(new Chess());
     const [game_FEN, setGameFEN] = useState(start_FEN);
     const [game_state, setGameState] = useState("");
@@ -70,10 +70,7 @@ export default function Puzzle({ start_FEN, end_FEN }) {
         setGameState("");
     }
 
-    let analysis_link = "https://lichess.org/analysis/" + start_FEN;
-
-
-
+    var analysis_link = "https://lichess.org/analysis/" + start_FEN;
     return (
         <div>
             <h2> {game_state} </h2>
@@ -84,7 +81,7 @@ export default function Puzzle({ start_FEN, end_FEN }) {
                     id="puzzle"
                     position={game_FEN}
                     onPieceDrop={onDrop}
-                    boardOrientation='black'
+                    boardOrientation={turn_color}
                 />
             </div>
             <button onClick={() => retryPuzzle()}>Retry Puzzle</button>

@@ -8,8 +8,8 @@ import { AppContext } from './AppContext';
 export default function PuzzleDisplay({ FEN_array }) {
 
     var puzzles = [];
-    for (var i = 0; i < FEN_array.length; i += 2) {
-        puzzles.push(<Puzzle start_FEN={FEN_array[i]} end_FEN={FEN_array[i + 1]} />);
+    for (var i = 0; i < FEN_array.length; i++) {
+        puzzles.push(<Puzzle start_FEN={FEN_array[i][0]} end_FEN={FEN_array[i][1]} turn_color={FEN_array[i][2]} />);
     }
     const { puzzle_counter, setPuzzleCounter } = useContext(AppContext);
 

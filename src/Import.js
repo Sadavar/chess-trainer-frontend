@@ -54,7 +54,7 @@ export default function Import() {
                 return;
             }
         }
-        let size = (pgns.games.length > 10) ? 10 : pgns.games.length;
+        let size = (pgns.games.length > 3) ? 3 : pgns.games.length;
         var tactics_found = [];
         for (var i = 0; i < size; i++) {
             let t = await getTactics(pgns.games[i].pgn);
@@ -69,9 +69,14 @@ export default function Import() {
     async function getTactics(pgn) {
         console.log("getting tactics of: " + pgn);
 
-        const url = new URL('https://chess-trainer-python-b932ead51c12.herokuapp.com/getTactics');
-        // const url2 = new URL('https://chess-trainer-backend-sadavar-6c10d1a552e9.herokuapp.com/getTactics');
-        // const url = new URL('http://127.0.0.1:5000/getTactics');
+        // const url = new URL('https://chess-trainer-python-b932ead51c12.herokuapp.com/getTactics');
+        // const url = new URL('https://chess-trainer-backend-sadavar-6c10d1a552e9.herokuapp.com/getTactics');
+        const url = new URL('http://127.0.0.1:5000/getTactics');
+
+        var payload = {
+            "pgn": pgn,
+            "username": username
+        }
 
         const res = await fetch(url, {
             method: "POST", // *GET, POST, PUT, DELETE, etc.
@@ -80,7 +85,7 @@ export default function Import() {
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify(pgn), // body data type must match "Content-Type" header
+            body: JSON.stringify(payload), // body data type must match "Content-Type" header
         });
 
         const tactics = res.json();
