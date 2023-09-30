@@ -63,8 +63,14 @@ export default function Import() {
         let size = (pgns.games.length > 10) ? 10 : pgns.games.length;
         var tactics_found = [];
         for (var i = 0; i < size; i++) {
-            let t = await getTactics(pgns.games[i].pgn);
-            tactics_found = tactics_found.concat(t);
+            try {
+                let t = await getTactics(pgns.games[i].pgn);
+                tactics_found = tactics_found.concat(t);
+            } catch (error) {
+                console.log("error");
+                console.log(error);
+                continue;
+            }
         }
         console.log("tactics loaded!");
         console.log(tactics_found);
