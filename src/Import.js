@@ -11,6 +11,10 @@ export default function Import() {
     var [tacticsLoaded, setTacticsLoaded] = useState(false);
     const { puzzle_counter, setPuzzleCounter } = useContext(AppContext);
 
+    const [isLoading, setIsLoading] = useState(false);
+    const [data, setData] = useState([]);
+
+
     async function handleGenerate() {
         console.log("generating");
         if (username == '') return;
@@ -19,6 +23,8 @@ export default function Import() {
 
     async function getPGNs() {
         console.log("getting pgns of: " + username);
+
+        setIsLoading(true);
 
         var date = new Date();
         var current_year = date.getFullYear();
@@ -63,6 +69,7 @@ export default function Import() {
         console.log("tactics loaded!");
         console.log(tactics_found);
         setTacticsLoaded(true);
+        setIsLoading(false);
         setTactics(tactics_found);
     };
 
@@ -109,6 +116,10 @@ export default function Import() {
                 value={username}
             />
             <button onClick={handleGenerate}> Generate </button>
+
+            <div>
+            {isLoading ? <p>Loading...</p> : null}
+            </div>
 
             {displayTactics()}
 
