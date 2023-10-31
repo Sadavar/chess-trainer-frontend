@@ -74,7 +74,7 @@ export default function Puzzle({ start_FEN, end_FEN, turn_color }) {
     return (
         <div>
             <h2> {game_state} </h2>
-            <h4><a href={analysis_link}>Analysis Board</a></h4>
+            <h4><a href={analysis_link} target="_blank">Analysis Board</a></h4>
 
             <div style={{ width: 500 }}>
                 <Chessboard
