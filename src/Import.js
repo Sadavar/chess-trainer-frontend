@@ -96,8 +96,8 @@ export default function Import() {
     async function getTactics(pgn) {
         console.log("getting tactics of: " + pgn);
 
-        // const url = new URL('https://chess-trainer-python-b932ead51c12.herokuapp.com/getTactics');
-        const url = new URL('http://127.0.0.1:5000/getTactics');
+        const url = new URL('https://chess-trainer-python-b932ead51c12.herokuapp.com/getTactics');
+        // const url = new URL('http://127.0.0.1:5000/getTactics');
 
         var payload = {
             pgn: pgn,
