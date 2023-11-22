@@ -21,11 +21,17 @@ export default function PuzzleDisplay({ FEN_array }) {
         setPuzzleCounter(0);
     }, [FEN_array])
 
+    function nextPuzzle() {
+        console.log("next puzzle");
+        setPuzzleCounter(puzzle_counter + 1);
+
+    }
+
     return (
         <div>
             <h2>Puzzles: {puzzles.length}</h2>
             {puzzles[puzzle_counter]}
-            <button onClick={setPuzzleCounter(puzzle_counter + 1)}>Next Puzzle</button>
+            <button onClick={nextPuzzle}>Next Puzzle</button>
         </div>
     );
 }
