@@ -13,11 +13,13 @@ export default function Import() {
     const { puzzle_counter, setPuzzleCounter } = useContext(AppContext);
 
     const [isLoading, setIsLoading] = useState(false);
+    const [status, setStatus] = useState("");
 
 
     async function handleGenerate() {
         console.log("generating");
         if (username == '') return;
+        setStatus("Loading Games from Chess.com...");
         getPGNs();
     }
 
@@ -31,9 +33,10 @@ export default function Import() {
         var data_retreived = false;
         var pgns;
         var months_tried = 0;
+        var num_games = 0;
 
         // try and grab data from the last 2 years
-        while (!data_retreived && months_tried < 24) {
+        while (months_tried < 24 && num_games < 10) {
             console.log(date);
 
             if (date.getMonth() == 0) {
@@ -45,20 +48,31 @@ export default function Import() {
             var url = chess_api_url + month;
             months_tried++;
 
+
             try {
-                const res = await axios.get(url);
-                if (res.data.games.length == 0) {
-                    console.log("no games found for" + date.getFullYear() + "/" + month);
-                    date.setMonth(date.getMonth() - 1);
-                } else {
-                    pgns = res.data;
-                    data_retreived = true;
-                }
+                var res = await axios.get(url);
                 console.log(res);
-            } catch (error) {
-                console.log(error);
-                continue;
+            } catch (err) {
+                if (err.response) {
+                    console.log(err.response.data);
+                    setStatus("Error Loading Games");
+                }
+                return;
             }
+
+            if (res.data.games.length == 0) {
+                console.log("no games found for" + date.getFullYear() + "/" + month);
+                date.setMonth(date.getMonth() - 1);
+            } else {
+                pgns = res.data;
+                num_games += pgns.games.length;
+            }
+        }
+
+        if (num_games == 0) {
+            console.log("No games found");
+            setStatus("No Games Found");
+            return;
         }
 
 
@@ -81,7 +95,7 @@ export default function Import() {
 
         if (tactics_found.length == 0) {
             console.log("tactics array empty");
-            setIsLoading(false);
+            setStatus("No Tactics Found");
             return;
         }
 
@@ -89,7 +103,6 @@ export default function Import() {
         console.log("tactics loaded!");
         console.log(tactics_found);
         setTacticsLoaded(true);
-        setIsLoading(false);
         setTactics(tactics_found);
     };
 
@@ -144,7 +157,8 @@ export default function Import() {
             <button onClick={handleGenerate}> Generate </button>
 
             <div>
-                {isLoading ? <p>Loading...</p> : null}
+                {/* {isLoading ? <p>Loading...</p> : null} */}
+                {status}
             </div>
 
             {displayTactics()}
