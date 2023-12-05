@@ -4,23 +4,77 @@ import Chess from "chess";
 import PuzzleDisplay from './PuzzleDisplay.js';
 import { AppContext } from './AppContext';
 import axios from 'axios';
+import { Chart as ChartJS, registerables } from 'chart.js';
+import { Chart } from 'react-chartjs-2'
+ChartJS.register(...registerables);
+
 
 export default function Import() {
     const [username, setUsername] = useState('');
-    const [pgns, setPGNs] = useState([]);
     const [tactics, setTactics] = useState([]);
     const [tacticsLoaded, setTacticsLoaded] = useState(false);
     const { puzzle_counter, setPuzzleCounter } = useContext(AppContext);
+    const [lineChartData, setLineChartData] = useState({
+        labels: [],
+        datasets: [
+            {
+                type: "line",
+                data: []
+            }
+        ]
+    });
 
     const [status, setStatus] = useState("");
 
+    async function handleStream() {
+        console.log("streaming");
+        const stream = await generateStream()
+        for await (const chunk of stream) {
+            console.log(chunk)
+        }
+    }
+
+    const generateStream = async () => {
+        const url = new URL('http://127.0.0.1:5000/getTactics');
+        const response = await fetch(
+            url,
+            {
+                method: 'POST',
+                body: JSON.stringify({
+                    pgn: "1. e4 e5 2. Nc3 Nc6",
+                    username: "sadavar"
+                }),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }
+        )
+
+        if (response.status !== 200) throw new Error(response.status.toString())
+        if (!response.body) throw new Error('Response body does not exist')
+
+        return getIterableStream(response.body)
+    }
+
+    async function* getIterableStream(body) {
+        const reader = body.getReader()
+        const decoder = new TextDecoder()
+
+        while (true) {
+            const { value, done } = await reader.read()
+            if (done) {
+                break
+            }
+            const decodedChunk = decoder.decode(value, { stream: true })
+            yield decodedChunk
+        }
+    }
 
     async function handleGenerate() {
         console.log("generating");
         if (username == '') return;
         setTacticsLoaded(false);
         setTactics([]);
-        setPGNs([]);
         setPuzzleCounter(0);
 
         getPGNs();
@@ -78,15 +132,12 @@ export default function Import() {
             return;
         }
 
-
         // Generate tactics from the games
         setStatus("Loading Tactics...");
         var tactics_found = [];
         for (var game of games) {
             try {
                 var tactic = await getTactics(game.pgn);
-                console.log("recieved tactics: ");
-                console.log(tactic);
                 if (tactic != null) {
                     tactics_found = tactics_found.concat(tactic);
                 }
@@ -113,32 +164,93 @@ export default function Import() {
     async function getTactics(pgn) {
         console.log("getting tactics of: " + pgn);
 
-        const url = new URL('https://chess-trainer-python-b932ead51c12.herokuapp.com/getTactics');
-        // const url = new URL('http://127.0.0.1:5000/getTactics');
-
-        var payload = {
-            pgn: pgn,
-            username: username
-        };
-
-        const headers = {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-        };
-
-        var tactics;
+        // const url = new URL('https://chess-trainer-python-b932ead51c12.herokuapp.com/getTactics');
+        const url = new URL('http://127.0.0.1:5000/getTactics');
+        var response;
+        // get tactics
         try {
-            const res = await axios.post(url, payload, headers)
-            if (res.data.length == 0) {
-                console.log("no tactics found");
-                return;
-            }
-            tactics = res.data;
-        } catch (error) {
-            console.log(error);
+            response = await fetch(
+                url,
+                {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        pgn: pgn,
+                        username: username
+                    }),
+                    headers: {
+                        'Content-Type': 'application/json',
+                        // 'Access-Control-Allow-Origin': '*'
+                    }
+                }
+            )
+
+            if (response.status !== 200) throw new Error(response.status.toString())
+            if (!response.body) throw new Error('Response body does not exist')
+        } catch (err) {
+            console.log(err);
+            return [];
         }
 
-        console.log("tactics found: " + tactics);
+        // Generate eval straem
+        const stream = getIterableStream(response.body);
+        var chunk;
+        var chunk_num = 0;
+        var labels_arr = [];
+
+        // reset chart data
+        setLineChartData({
+            labels: [],
+            datasets: [
+                {
+                    type: "line",
+                    data: []
+                }
+            ]
+        });
+        lineChartData.datasets[0].data = [];
+        lineChartData.labels = [];
+
+        for await (chunk of stream) {
+            console.log(chunk);
+            // break if the chunk is an array
+            if (chunk[0] == '[') {
+                break;
+            }
+            // create data point
+            var data = JSON.parse(chunk);
+            // add data point to chart data
+
+            var old_chart_data = lineChartData.datasets[0];
+            var new_chart_data = { ...old_chart_data };
+            new_chart_data.data.push(data);
+            console.log("new chart data: " + new_chart_data.data);
+
+            labels_arr.push(chunk_num);
+
+            const newChartData = {
+                ...lineChartData,
+                datasets: [new_chart_data],
+                labels: labels_arr
+            };
+
+            console.log("labels: " + newChartData.labels);
+            console.log("data: " + newChartData.datasets[0].data);
+
+            setLineChartData(newChartData);
+
+
+
+            chunk_num++;
+        }
+        //last chunk is the tactics array
+        var tactics = chunk;
+        if (tactics.length == 0) {
+            console.log("no tactics found");
+            return [];
+        }
+        tactics = JSON.parse(tactics);
+        console.log("tactics found: ");
+        console.log(tactics);
         return tactics;
     }
 
@@ -148,6 +260,31 @@ export default function Import() {
         }
     }
 
+    function displayChart() {
+        if (status == "Loading Tactics...") {
+            return <Chart options={lineChartOptions} data={lineChartData} />
+        }
+    }
+
+    var lineChartOptions = {
+        // responsive: true,
+        // maintainAspectRatio: false,
+        // tooltips: {
+        //     enabled: true
+        // },
+        // // scales: {
+        // //     xAxes: [
+        // //         {
+        // //             ticks: {
+        // //                 autoSkip: true,
+        // //                 maxTicksLimit: 10
+        // //             }
+        // //         }
+        // //     ]
+        // // }
+
+    }
+
     return (
         <div>
             <h1> Chess Trainer </h1>
@@ -155,16 +292,18 @@ export default function Import() {
                 type="text"
                 id="username-input"
                 name="username-input"
+                placeholder="Chess.com Username"
                 onChange={(event) => setUsername(event.target.value)}
                 value={username}
             />
             <button onClick={handleGenerate}> Generate </button>
+            <button onClick={handleStream}> Stream! </button>
 
-            <div>
-                {status}
-            </div>
+            <div> {status} </div>
 
             {displayTactics()}
+
+            {displayChart()}
 
         </div>
     );
