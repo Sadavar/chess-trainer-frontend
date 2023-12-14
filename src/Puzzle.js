@@ -3,9 +3,10 @@ import { useEffect } from 'react';
 import { Chessboard } from "react-chessboard";
 import * as ChessJS from "chess.js";
 
+
 const Chess = typeof ChessJS === "function" ? ChessJS : ChessJS.Chess;
 
-export default function Puzzle({ start_FEN, end_FEN, turn_color }) {
+const Puzzle = ({ start_FEN, end_FEN, turn_color, retryPuzzleRef }) => {
     const [game, setGame] = useState(new Chess());
     const [game_FEN, setGameFEN] = useState(start_FEN);
     const [game_state, setGameState] = useState("");
@@ -64,29 +65,43 @@ export default function Puzzle({ start_FEN, end_FEN, turn_color }) {
         return true; // null if the move was illegal, the move object if the move was legal
     }
 
-    function retryPuzzle() {
+    const retryPuzzle = () => {
         game.load(start_FEN);
         setGameFEN(start_FEN);
         setGameState("");
-    }
+    };
+
+    // Pass the retryPuzzle function to the parent component
+    useEffect(() => {
+        retryPuzzleRef.current.retryPuzzle = retryPuzzle;
+    }, [retryPuzzleRef, start_FEN]);
 
     var analysis_link = "https://lichess.org/analysis/" + start_FEN;
     return (
-        <div>
-            <h2> {game_state} </h2>
-            <h4><a href={analysis_link} target="_blank">Analysis Board</a></h4>
+        // <div>
+        //     <h2> {game_state} </h2>
+        //     <h4><a href={analysis_link} target="_blank">Analysis Board</a></h4>
 
-            <div style={{ width: 500 }}>
-                <Chessboard
-                    id="puzzle"
-                    position={game_FEN}
-                    onPieceDrop={onDrop}
-                    boardOrientation={turn_color}
-                />
-            </div>
-            <button onClick={() => retryPuzzle()}>Retry Puzzle</button>
-        </div>
+        //     <div>
+        //         <Chessboard
+        //             id="puzzle"
+        //             position={game_FEN}
+        //             onPieceDrop={onDrop}
+        //             boardOrientation={turn_color}
+        //         />
+        //     </div>
+        //     <button onClick={() => retryPuzzle()}>Retry Puzzle</button>
+        // </div>
+
+        <Chessboard
+            id="puzzle"
+            position={game_FEN}
+            onPieceDrop={onDrop}
+            boardOrientation={turn_color}
+        />
     );
 }
+
+export default Puzzle;
 
 

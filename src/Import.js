@@ -7,7 +7,8 @@ import axios from 'axios';
 import { Chart as ChartJS, registerables } from 'chart.js';
 import { Chart } from 'react-chartjs-2'
 
-import { Button, Input, Col, Row, Space, Typography, Card } from 'antd'
+import { Button, Input, Col, Row, Space, Typography, Card, Statistic } from 'antd'
+import { ArrowDownOutlined, ArrowUpOutlined } from '@ant-design/icons';
 const { Text, Link, Title } = Typography
 
 
@@ -32,6 +33,9 @@ export default function Import() {
 
     const [status, setStatus] = useState("");
     const [game_info, setGameInfo] = useState({});
+    const [window_width, setWindowWidth] = useState(window.innerWidth);
+    const [loading_game_num, setLoadingGameNum] = useState(0);
+
 
     async function* getIterableStream(body) {
         const reader = body.getReader()
@@ -62,10 +66,11 @@ export default function Import() {
         var games = [];
         var months_tried = 0;
         var num_games = 0;
+        var num_games_analyzing = 3;
 
         // Grab chess games from the last 2 years
         setStatus("Loading Games from Chess.com...");
-        while (months_tried < 24 && num_games < 10) {
+        while (months_tried < 24 && num_games < num_games_analyzing) {
             console.log(date);
 
             if (date.getMonth() == 0) {
@@ -91,7 +96,7 @@ export default function Import() {
                 date.setMonth(date.getMonth() - 1);
             } else {
                 for (var game of res.data.games) {
-                    if (num_games >= 10) {
+                    if (num_games >= num_games_analyzing) {
                         break;
                     }
                     games.push(game);
@@ -109,7 +114,10 @@ export default function Import() {
         // Generate tactics from the games
         setStatus("Loading Tactics...");
         var tactics_found = [];
+        var game_num = 0;
         for (var game of games) {
+            game_num++;
+            setLoadingGameNum(game_num);
             try {
                 var tactic = await getTactics(game.pgn);
                 if (tactic != null) {
@@ -139,8 +147,8 @@ export default function Import() {
 
         var info = pgn.split('\n');
 
-        var game_jnfo = {
-            date: info[1].split('"')[1],
+        var game_info = {
+            date: info[2].split('"')[1],
             white: info[4].split('"')[1],
             black: info[5].split('"')[1],
             result: info[5].split('"')[1],
@@ -148,8 +156,7 @@ export default function Import() {
             black_elo: info[14].split('"')[1],
             time_control: info[15].split('"')[1]
         }
-        setGameInfo(game_jnfo);
-
+        setGameInfo(game_info);
 
 
 
@@ -253,18 +260,51 @@ export default function Import() {
 
     function displayGameInfo() {
         if (status == "Loading Tactics...") {
+            var title = "Game Being Analyzed" + " (" + loading_game_num + "/" + 10 + ")";
             return (
-                <Space direction="vertical" size={16}>
-                    <Card title="Game Being Analyzed" style={{ width: "12.5 %" }}>
-                        <div> Date: {game_info.date} </div>
-                        <div> White: {game_info.white} </div>
-                        <div> Black: {game_info.black} </div>
-                        <div> Result: {game_info.result} </div>
-                        <div> White Elo: {game_info.white_elo} </div>
-                        <div> Black Elo: {game_info.black_elo} </div>
-                        <div> Time Control: {game_info.time_control} </div>
-                    </Card>
-                </Space>
+                <Card title={title} bordered={false}>
+                    <div> Date: {game_info.date} </div>
+                    <div> White: {game_info.white} </div>
+                    <div> Black: {game_info.black} </div>
+                    <div> Result: {game_info.result} </div>
+                    <div> White Elo: {game_info.white_elo} </div>
+                    <div> Black Elo: {game_info.black_elo} </div>
+                    <div> Time Control: {game_info.time_control} </div>
+                </Card>
+            );
+        }
+    }
+
+    function displayLoadingInfo() {
+        if (window_width < 1000) {
+            return (
+                <>
+                    <Row>
+                        <Col span={24} align="middle">
+                            {displayChart()}
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col span={24} align="middle">
+                            {displayGameInfo()}
+                        </Col>
+                    </Row>
+                </>
+            );
+        }
+        else {
+            return (
+                <Row >
+                    <Col span={3}></Col>
+                    <Col span={7} align="middle">
+                        {displayGameInfo()}
+                    </Col>
+                    <Col span={12} align="middle">
+                        {displayChart()}
+                    </Col>
+                    <Col span={2}></Col>
+                </Row>
+
             );
         }
     }
@@ -290,13 +330,21 @@ export default function Import() {
                 display: false
             }
         },
-        responsive: "true"
+        responsive: "true",
+        maintainAspectRatio: "false"
 
     }
 
+    useEffect(() => {
+        function handleResize() {
+            setWindowWidth(window.innerWidth);
+        }
+        window.addEventListener('resize', handleResize)
+    })
+
     return (
         <div>
-            <Row align="middle">
+            <Row align="middle" >
                 <Col span={24} align="middle">
                     <Title> Chess Trainer</Title>
                 </Col>
@@ -319,13 +367,15 @@ export default function Import() {
                     </Button>
                 </Col>
             </Row>
-            <Row>
+            <Row >
                 <Col span={24} align="middle">
                     <Text> {status} </Text>
                 </Col>
             </Row>
 
-            <Row >
+            {displayLoadingInfo()}
+
+            {/* <Row >
                 <Col span={3}></Col>
                 <Col span={7} align="middle">
                     {displayGameInfo()}
@@ -334,7 +384,7 @@ export default function Import() {
                     {displayChart()}
                 </Col>
                 <Col span={2}></Col>
-            </Row>
+            </Row> */}
 
             {displayTactics()}
 
