@@ -36,7 +36,7 @@ export default function Import() {
     const [window_width, setWindowWidth] = useState(window.innerWidth);
     const [loading_game_num, setLoadingGameNum] = useState(0);
 
-    var num_games_analyzing = 2;
+    var num_games_analyzing = 10;
 
 
     async function* getIterableStream(body) {
