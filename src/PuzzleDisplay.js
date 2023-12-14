@@ -20,6 +20,10 @@ export default function PuzzleDisplay({ FEN_array }) {
     }, [FEN_array])
 
     function nextPuzzle() {
+        if (puzzle_counter === FEN_array.length - 1) {
+            setPuzzleCounter(0);
+            return;
+        }
         console.log("next puzzle");
         setPuzzleCounter(puzzle_counter + 1);
     }

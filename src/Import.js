@@ -36,6 +36,8 @@ export default function Import() {
     const [window_width, setWindowWidth] = useState(window.innerWidth);
     const [loading_game_num, setLoadingGameNum] = useState(0);
 
+    var num_games_analyzing = 2;
+
 
     async function* getIterableStream(body) {
         const reader = body.getReader()
@@ -66,8 +68,6 @@ export default function Import() {
         var games = [];
         var months_tried = 0;
         var num_games = 0;
-        var num_games_analyzing = 3;
-
         // Grab chess games from the last 2 years
         setStatus("Loading Games from Chess.com...");
         while (months_tried < 24 && num_games < num_games_analyzing) {
@@ -260,7 +260,7 @@ export default function Import() {
 
     function displayGameInfo() {
         if (status == "Loading Tactics...") {
-            var title = "Game Being Analyzed" + " (" + loading_game_num + "/" + 10 + ")";
+            var title = "Game Being Analyzed" + " (" + loading_game_num + "/" + num_games_analyzing + ")";
             return (
                 <Card title={title} bordered={false}>
                     <div> Date: {game_info.date} </div>
