@@ -4,12 +4,15 @@ import Puzzle from './Puzzle.js'
 import Chess from "chess";
 import { AppContext } from './AppContext';
 import { Button, Input, Col, Row, Space, Typography, Card } from 'antd'
+const { Text, Link, Title } = Typography
+
 
 export default function PuzzleDisplay({ FEN_array }) {
     const { puzzle_counter, setPuzzleCounter } = useContext(AppContext);
     const retryPuzzleRef = useRef({ retryPuzzle: () => { } });
     const puzzleRef = useRef();
     const [window_width, setWindowWidth] = useState(window.innerWidth);
+    const [game_state, setGameState] = useState("");
 
 
     useEffect(() => {
@@ -50,6 +53,7 @@ export default function PuzzleDisplay({ FEN_array }) {
                             end_FEN={FEN_array[puzzle_counter][1]}
                             turn_color={FEN_array[puzzle_counter][2]}
                             retryPuzzleRef={retryPuzzleRef}
+                            setGameStateRef={setGameState}
                         />
                     </Col>
                 </Row>
@@ -57,6 +61,7 @@ export default function PuzzleDisplay({ FEN_array }) {
                     <Col span={24} align="middle">
                         <Button onClick={nextPuzzle}>Next Puzzle</Button>
                         <Button onClick={retryPuzzle}>Retry Puzzle</Button>
+                        <h2>{game_state}</h2>
                     </Col>
                 </Row>
             </>
@@ -72,12 +77,14 @@ export default function PuzzleDisplay({ FEN_array }) {
                         end_FEN={FEN_array[puzzle_counter][1]}
                         turn_color={FEN_array[puzzle_counter][2]}
                         retryPuzzleRef={retryPuzzleRef}
+                        setGameStateRef={setGameState}
                     />
                 </Col>
                 <Col span={13} align="middle">
                     <h2>Puzzles: {FEN_array.length}</h2>
                     <Button onClick={nextPuzzle}>Next Puzzle</Button>
                     <Button onClick={retryPuzzle}>Retry Puzzle</Button>
+                    <h2>{game_state}</h2>
                 </Col>
                 <Col span={3}></Col>
             </Row>

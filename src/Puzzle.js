@@ -6,7 +6,7 @@ import * as ChessJS from "chess.js";
 
 const Chess = typeof ChessJS === "function" ? ChessJS : ChessJS.Chess;
 
-const Puzzle = ({ start_FEN, end_FEN, turn_color, retryPuzzleRef }) => {
+const Puzzle = ({ start_FEN, end_FEN, turn_color, retryPuzzleRef, setGameStateRef }) => {
     const [game, setGame] = useState(new Chess());
     const [game_FEN, setGameFEN] = useState(start_FEN);
     const [game_state, setGameState] = useState("");
@@ -76,23 +76,14 @@ const Puzzle = ({ start_FEN, end_FEN, turn_color, retryPuzzleRef }) => {
         retryPuzzleRef.current.retryPuzzle = retryPuzzle;
     }, [retryPuzzleRef, start_FEN]);
 
+    // Pass the game state to the parent component
+    useEffect(() => {
+        setGameStateRef(game_state);
+    }, [game_state]);
+
+
     var analysis_link = "https://lichess.org/analysis/" + start_FEN;
     return (
-        // <div>
-        //     <h2> {game_state} </h2>
-        //     <h4><a href={analysis_link} target="_blank">Analysis Board</a></h4>
-
-        //     <div>
-        //         <Chessboard
-        //             id="puzzle"
-        //             position={game_FEN}
-        //             onPieceDrop={onDrop}
-        //             boardOrientation={turn_color}
-        //         />
-        //     </div>
-        //     <button onClick={() => retryPuzzle()}>Retry Puzzle</button>
-        // </div>
-
         <Chessboard
             id="puzzle"
             position={game_FEN}
