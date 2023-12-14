@@ -6,6 +6,12 @@ import { AppContext } from './AppContext';
 import axios from 'axios';
 import { Chart as ChartJS, registerables } from 'chart.js';
 import { Chart } from 'react-chartjs-2'
+
+import { Button, Input, Col, Row, Space, Typography, Card } from 'antd'
+const { Text, Link, Title } = Typography
+
+
+
 ChartJS.register(...registerables);
 
 
@@ -25,36 +31,7 @@ export default function Import() {
     });
 
     const [status, setStatus] = useState("");
-
-    async function handleStream() {
-        console.log("streaming");
-        const stream = await generateStream()
-        for await (const chunk of stream) {
-            console.log(chunk)
-        }
-    }
-
-    const generateStream = async () => {
-        const url = new URL('http://127.0.0.1:5000/getTactics');
-        const response = await fetch(
-            url,
-            {
-                method: 'POST',
-                body: JSON.stringify({
-                    pgn: "1. e4 e5 2. Nc3 Nc6",
-                    username: "sadavar"
-                }),
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            }
-        )
-
-        if (response.status !== 200) throw new Error(response.status.toString())
-        if (!response.body) throw new Error('Response body does not exist')
-
-        return getIterableStream(response.body)
-    }
+    const [game_info, setGameInfo] = useState({});
 
     async function* getIterableStream(body) {
         const reader = body.getReader()
@@ -76,15 +53,12 @@ export default function Import() {
         setTacticsLoaded(false);
         setTactics([]);
         setPuzzleCounter(0);
-
         getPGNs();
     }
 
     async function getPGNs() {
         console.log("getting pgns of: " + username);
         var date = new Date();
-        var current_year = date.getFullYear();
-        var data_retreived = false;
         var games = [];
         var months_tried = 0;
         var num_games = 0;
@@ -153,7 +127,6 @@ export default function Import() {
             return;
         }
 
-
         console.log("tactics loaded!");
         console.log(tactics_found);
         setTacticsLoaded(true);
@@ -163,6 +136,22 @@ export default function Import() {
 
     async function getTactics(pgn) {
         console.log("getting tactics of: " + pgn);
+
+        var info = pgn.split('\n');
+
+        var game_jnfo = {
+            date: info[1].split('"')[1],
+            white: info[4].split('"')[1],
+            black: info[5].split('"')[1],
+            result: info[5].split('"')[1],
+            white_elo: info[13].split('"')[1],
+            black_elo: info[14].split('"')[1],
+            time_control: info[15].split('"')[1]
+        }
+        setGameInfo(game_jnfo);
+
+
+
 
         // const url = new URL('https://chess-trainer-python-b932ead51c12.herokuapp.com/getTactics');
         const url = new URL('http://127.0.0.1:5000/getTactics');
@@ -219,7 +208,6 @@ export default function Import() {
             // create data point
             var data = JSON.parse(chunk);
             // add data point to chart data
-
             var old_chart_data = lineChartData.datasets[0];
             var new_chart_data = { ...old_chart_data };
             new_chart_data.data.push(data);
@@ -237,9 +225,6 @@ export default function Import() {
             console.log("data: " + newChartData.datasets[0].data);
 
             setLineChartData(newChartData);
-
-
-
             chunk_num++;
         }
         //last chunk is the tactics array
@@ -266,45 +251,94 @@ export default function Import() {
         }
     }
 
+    function displayGameInfo() {
+        if (status == "Loading Tactics...") {
+            return (
+                <Space direction="vertical" size={16}>
+                    <Card title="Game Being Analyzed" style={{ width: "12.5 %" }}>
+                        <div> Date: {game_info.date} </div>
+                        <div> White: {game_info.white} </div>
+                        <div> Black: {game_info.black} </div>
+                        <div> Result: {game_info.result} </div>
+                        <div> White Elo: {game_info.white_elo} </div>
+                        <div> Black Elo: {game_info.black_elo} </div>
+                        <div> Time Control: {game_info.time_control} </div>
+                    </Card>
+                </Space>
+            );
+        }
+    }
+
+
     var lineChartOptions = {
-        // responsive: true,
-        // maintainAspectRatio: false,
-        // tooltips: {
-        //     enabled: true
-        // },
-        // // scales: {
-        // //     xAxes: [
-        // //         {
-        // //             ticks: {
-        // //                 autoSkip: true,
-        // //                 maxTicksLimit: 10
-        // //             }
-        // //         }
-        // //     ]
-        // // }
+        scales: {
+            x: {
+                title: {
+                    display: true,
+                    text: 'Move Number'
+                }
+            },
+            y: {
+                title: {
+                    display: true,
+                    text: 'Evaluation (CP)'
+                }
+            }
+        },
+        plugins: {
+            legend: {
+                display: false
+            }
+        },
+        responsive: "true"
 
     }
 
     return (
         <div>
-            <h1> Chess Trainer </h1>
-            <input
-                type="text"
-                id="username-input"
-                name="username-input"
-                placeholder="Chess.com Username"
-                onChange={(event) => setUsername(event.target.value)}
-                value={username}
-            />
-            <button onClick={handleGenerate}> Generate </button>
+            <Row align="middle">
+                <Col span={24} align="middle">
+                    <Title> Chess Trainer</Title>
+                </Col>
+            </Row>
 
-            <div> {status} </div>
+            <Row>
+                <Col span={24} align="middle">
+                    <Input
+                        placeholder="Chess.com Username"
+                        onChange={(event) => setUsername(event.target.value)}
+                        value={username}
+                        size="default"
+                        style={{ width: 200 }}
+                    />
+                    <Button
+                        onClick={handleGenerate}
+                        type="primary"
+                        size="default"
+                    > Generate
+                    </Button>
+                </Col>
+            </Row>
+            <Row>
+                <Col span={24} align="middle">
+                    <Text> {status} </Text>
+                </Col>
+            </Row>
+
+            <Row >
+                <Col span={3}></Col>
+                <Col span={7} align="middle">
+                    {displayGameInfo()}
+                </Col>
+                <Col span={12} align="middle">
+                    {displayChart()}
+                </Col>
+                <Col span={2}></Col>
+            </Row>
 
             {displayTactics()}
 
-            {displayChart()}
-
-        </div>
+        </div >
     );
 }
 
