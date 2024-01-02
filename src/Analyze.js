@@ -2,21 +2,19 @@ import { useState, useContext, useEffect } from 'react';
 import { Chessboard } from "react-chessboard";
 import Chess from "chess";
 import PuzzleDisplay from './PuzzleDisplay.js';
-import { AppContext } from './AppContext';
+import { AppContext } from './AppContext.js';
 import axios from 'axios';
 import { Chart as ChartJS, registerables } from 'chart.js';
 import { Chart } from 'react-chartjs-2'
+import Header from './Header.js';
+
 
 import { Button, Input, Col, Row, Space, Typography, Card, Statistic } from 'antd'
-import { ArrowDownOutlined, ArrowUpOutlined } from '@ant-design/icons';
 const { Text, Link, Title } = Typography
-
-
 
 ChartJS.register(...registerables);
 
-
-export default function Import() {
+export default function Analyze() {
     const [username, setUsername] = useState('');
     const [tactics, setTactics] = useState([]);
     const [tacticsLoaded, setTacticsLoaded] = useState(false);
@@ -344,6 +342,7 @@ export default function Import() {
 
     return (
         <div>
+            <Header />
             <Row align="middle" >
                 <Col span={24} align="middle">
                     <Title> Chess Trainer</Title>
