@@ -8,23 +8,17 @@ import { Chart as ChartJS, registerables } from 'chart.js';
 import { Chart } from 'react-chartjs-2'
 import Header from './Header.js';
 
-import { Grid, Space, Flex, Container, Center, Group } from '@mantine/core';
-import { Button, ActionIcon, Card, Title, Text, Image, TextInput, Badge } from '@mantine/core';
-import { Link } from "react-router-dom";
 
-import GameSelect from "./GameSelect.js";
+import { Button, Input, Col, Row, Space, Typography, Card, Statistic } from 'antd'
+const { Text, Link, Title } = Typography
 
 ChartJS.register(...registerables);
-
 
 export default function Analyze() {
     const [username, setUsername] = useState('');
     const [tactics, setTactics] = useState([]);
     const [tacticsLoaded, setTacticsLoaded] = useState(false);
-
     const { puzzle_counter, setPuzzleCounter } = useContext(AppContext);
-    const { selectedGames } = useContext(AppContext);
-
     const [lineChartData, setLineChartData] = useState({
         labels: [],
         datasets: [
@@ -35,25 +29,15 @@ export default function Analyze() {
         ]
     });
 
-    const status_options = {
-        Empty: "",
-        GameSelect: "GameSelect",
-        LoadingPuzzles: "LoadingPuzzles",
-        NoPuzzlesFound: "NoPuzzlesFound",
-        YesPuzzlesFound: "YesPuzzlesFound"
-    }
-
-    const [status, setStatus] = useState(status_options.GameSelect);
+    const [status, setStatus] = useState("");
     const [game_info, setGameInfo] = useState({});
     const [window_width, setWindowWidth] = useState(window.innerWidth);
     const [loading_game_num, setLoadingGameNum] = useState(0);
 
-    var num_games_analyzing = selectedGames.length;
+    var num_games_analyzing = 10;
+
 
     async function* getIterableStream(body) {
-        if (!body || !body.getReader) {
-            return;
-        }
         const reader = body.getReader()
         const decoder = new TextDecoder()
 
@@ -67,16 +51,69 @@ export default function Analyze() {
         }
     }
 
-    async function getPuzzles() {
-        if (selectedGames.length == 0) {
-            console.log("no games selected");
+    async function handleGenerate() {
+        console.log("generating");
+        if (username == '') return;
+        setTacticsLoaded(false);
+        setTactics([]);
+        setPuzzleCounter(0);
+        getPGNs();
+    }
+
+    async function getPGNs() {
+        console.log("getting pgns of: " + username);
+        var date = new Date();
+        var games = [];
+        var months_tried = 0;
+        var num_games = 0;
+        // Grab chess games from the last 2 years
+        setStatus("Loading Games from Chess.com...");
+        while (months_tried < 24 && num_games < num_games_analyzing) {
+            console.log(date);
+
+            if (date.getMonth() == 0) {
+                date.setFullYear(date.getFullYear() - 1);
+                date.setMonth(11);
+            }
+            var chess_api_url = new URL('https://api.chess.com/pub/player/' + username + '/games/' + date.getFullYear() + '/');
+            var month = ("0" + (date.getMonth() + 1)).slice(-2);
+            var url = chess_api_url + month;
+            months_tried++;
+
+            try {
+                var res = await axios.get(url);
+                console.log(res);
+            } catch (err) {
+                console.log(err);
+                setStatus("Error Loading Games");
+                return;
+            }
+
+            if (res.data.games.length == 0) {
+                console.log("no games found for" + date.getFullYear() + "/" + month);
+                date.setMonth(date.getMonth() - 1);
+            } else {
+                for (var game of res.data.games) {
+                    if (num_games >= num_games_analyzing) {
+                        break;
+                    }
+                    games.push(game);
+                    num_games++;
+                }
+            }
+        }
+
+        if (num_games == 0) {
+            console.log("No games found");
+            setStatus("No Games Found");
             return;
         }
+
         // Generate tactics from the games
-        setStatus(status_options.LoadingPuzzles);
+        setStatus("Loading Tactics...");
         var tactics_found = [];
         var game_num = 0;
-        for (var game of selectedGames) {
+        for (var game of games) {
             game_num++;
             setLoadingGameNum(game_num);
             try {
@@ -92,14 +129,15 @@ export default function Analyze() {
 
         if (tactics_found.length == 0) {
             console.log("tactics array empty");
-            setStatus(status_options.NoPuzzlesFound);
+            setStatus("No Tactics Found");
             return;
         }
 
-        console.log("Puzzles Found");
-        setStatus(status_options.YesPuzzlesFound);
+        console.log("tactics loaded!");
         console.log(tactics_found);
+        setTacticsLoaded(true);
         setTactics(tactics_found);
+        setStatus("");
     };
 
     async function getTactics(pgn) {
@@ -118,6 +156,8 @@ export default function Analyze() {
         }
         setGameInfo(game_info);
 
+
+
         const url = new URL('https://chess-trainer-python-b932ead51c12.herokuapp.com/getTactics');
         // const url = new URL('http://127.0.0.1:5000/getTactics');
         var response;
@@ -133,6 +173,7 @@ export default function Analyze() {
                     }),
                     headers: {
                         'Content-Type': 'application/json',
+                        // 'Access-Control-Allow-Origin': '*'
                     }
                 }
             )
@@ -203,15 +244,71 @@ export default function Analyze() {
         return tactics;
     }
 
-    function displayPuzzles() {
-        if (status == status_options.YesPuzzlesFound) {
+    function displayTactics() {
+        if (tacticsLoaded) {
             return <PuzzleDisplay FEN_array={tactics} />;
         }
     }
 
+    function displayChart() {
+        if (status == "Loading Tactics...") {
+            return <Chart options={lineChartOptions} data={lineChartData} />
+        }
+    }
+
+    function displayGameInfo() {
+        if (status == "Loading Tactics...") {
+            var title = "Game Being Analyzed" + " (" + loading_game_num + "/" + num_games_analyzing + ")";
+            return (
+                <Card title={title} bordered={false}>
+                    <div> Date: {game_info.date} </div>
+                    <div> White: {game_info.white} </div>
+                    <div> Black: {game_info.black} </div>
+                    <div> Result: {game_info.result} </div>
+                    <div> White Elo: {game_info.white_elo} </div>
+                    <div> Black Elo: {game_info.black_elo} </div>
+                    <div> Time Control: {game_info.time_control} </div>
+                </Card>
+            );
+        }
+    }
+
+    function displayLoadingInfo() {
+        if (window_width < 1000) {
+            return (
+                <>
+                    <Row>
+                        <Col span={24} align="middle">
+                            {displayChart()}
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col span={24} align="middle">
+                            {displayGameInfo()}
+                        </Col>
+                    </Row>
+                </>
+            );
+        }
+        else {
+            return (
+                <Row >
+                    <Col span={3}></Col>
+                    <Col span={7} align="middle">
+                        {displayGameInfo()}
+                    </Col>
+                    <Col span={12} align="middle">
+                        {displayChart()}
+                    </Col>
+                    <Col span={2}></Col>
+                </Row>
+
+            );
+        }
+    }
+
+
     var lineChartOptions = {
-        responsive: true,
-        maintainAspectRatio: false,
         scales: {
             x: {
                 title: {
@@ -231,6 +328,9 @@ export default function Analyze() {
                 display: false
             }
         },
+        responsive: "true",
+        maintainAspectRatio: "false"
+
     }
 
     useEffect(() => {
@@ -240,101 +340,54 @@ export default function Analyze() {
         window.addEventListener('resize', handleResize)
     })
 
-    function displayGameInfo() {
-        return (
-            <>
+    return (
+        <div>
+            <Header />
+            <Row align="middle" >
+                <Col span={24} align="middle">
+                    <Title> Chess Trainer</Title>
+                </Col>
+            </Row>
 
-                <Card shadow="lg" padding="lg" radius="lg" withBorder>
-                    <Group justify="space-between" mt="md" mb="xs">
-                        <h1 className="text-xl font-bold">Game Being Analyzed</h1>
-                        <Badge color="green"> {loading_game_num} / {num_games_analyzing}</Badge>
-                    </Group>
-                    <div> Date: {game_info.date} </div>
-                    <div> White: {game_info.white} </div>
-                    <div> Black: {game_info.black} </div>
-                    <div> Result: {game_info.result} </div>
-                    <div> White Elo: {game_info.white_elo} </div>
-                    <div> Black Elo: {game_info.black_elo} </div>
-                    <div> Time Control: {game_info.time_control} </div>
-                </Card>
-            </>
-        );
-    }
-
-    function displayLoading() {
-        if (status == status_options.LoadingPuzzles) {
-            return (
-                <div className="h-3/5 grid grid-cols-12 gap-4 pt-5">
-                    <div className="col-span-1"></div>
-                    <div className="col-span-5">
-                        {displayGameInfo()}
-                    </div>
-                    <div className="col-span-5">
-                        <Chart options={lineChartOptions} data={lineChartData} />
-                    </div>
-                    <div className="col-span-1"></div>
-                </div>
-            );
-        }
-    }
-
-    function handleAnalyze() {
-        console.log("analyzing");
-        setTacticsLoaded(false);
-        setTactics([]);
-        setPuzzleCounter(0);
-
-        getPuzzles();
-    }
-
-    function displayAnalyzeButton() {
-        if (status == status_options.GameSelect && selectedGames.length > 0) {
-            return (
-                <div className="pt-5">
+            <Row>
+                <Col span={24} align="middle">
+                    <Input
+                        placeholder="Chess.com Username"
+                        onChange={(event) => setUsername(event.target.value)}
+                        value={username}
+                        size="default"
+                        style={{ width: 200 }}
+                    />
                     <Button
                         variant="gradient" gradient={{ from: 'blue', to: 'cyan', deg: 90 }}
-                        className="gradientButton opacityHover"
-                        onClick={handleAnalyze}
-                    >Analyze</Button>
-                </div>
-            );
-        }
-    }
+                        onClick={handleGenerate}
+                        size="default"
+                    > Generate
+                    </Button>
+                </Col>
+            </Row>
+            <Row >
+                <Col span={24} align="middle">
+                    <Text> {status} </Text>
+                </Col>
+            </Row>
 
-    function displayGameSelect() {
-        if (status == status_options.GameSelect) {
-            return (
-                <div className="flex flex-col items-center">
-                    <div>
-                        <GameSelect />
-                    </div>
-                    <div>
-                        {displayAnalyzeButton()}
-                    </div>
-                </div>
-            );
-        }
-    }
+            {displayLoadingInfo()}
 
-    return (
-        <>
-            <div className="h-screen">
-                <div className="">
-                    <Header />
-                    <h1 className="text-5xl text-center font-bold pb-5">Find Puzzles</h1>
-                </div>
-                <div>
-                    {displayGameSelect()}
-                </div>
-                <div>
-                    {displayLoading()}
-                </div>
-                <div>
-                    {displayPuzzles()}
-                </div>
-            </div >
-        </>
+            {/* <Row >
+                <Col span={3}></Col>
+                <Col span={7} align="middle">
+                    {displayGameInfo()}
+                </Col>
+                <Col span={12} align="middle">
+                    {displayChart()}
+                </Col>
+                <Col span={2}></Col>
+            </Row> */}
 
+            {displayTactics()}
+
+        </div >
     );
 }
 

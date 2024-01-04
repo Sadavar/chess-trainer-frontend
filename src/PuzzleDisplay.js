@@ -33,7 +33,23 @@ export default function PuzzleDisplay({ FEN_array }) {
         retryPuzzleRef.current.retryPuzzle();
     };
 
-
+    function savePuzzle() {
+        console.log("saving puzzle");
+        var puzzle = {
+            start_FEN: FEN_array[puzzle_counter][0],
+            end_FEN: FEN_array[puzzle_counter][1],
+            turn_color: FEN_array[puzzle_counter][2]
+        }
+        console.log(puzzle);
+        var url = 'http://localhost:5000/savePuzzle';
+        axios.post(url, puzzle)
+            .then((res) => {
+                console.log(res);
+            })
+            .catch((err) => {
+                console.log(err);
+            })
+    }
 
     useEffect(() => {
         function handleResize() {
@@ -89,6 +105,7 @@ export default function PuzzleDisplay({ FEN_array }) {
                     <Button onClick={nextPuzzle}>Next Puzzle</Button>
                     <Button onClick={retryPuzzle}>Retry Puzzle</Button>
                     <h2>{game_state}</h2>
+                    {/* <Button onClick={savePuzzle}>Save Puzzle</Button> */}
                 </Col>
                 <Col span={3}></Col>
             </Row>

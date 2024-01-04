@@ -29,9 +29,9 @@ export default function LandingPage() {
 
                         {/* Section header */}
                         <div className="text-center pb-12 md:pb-16">
-                            <h1 className="text-5xl md:text-7xl font-extrabold leading-tighter tracking-tighter mb-4" data-aos="zoom-y-out"><span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-teal-400">Learn</span> from your mistakes</h1>
+                            <h1 className="text-5xl md:text-7xl font-extrabold leading-tighter tracking-tighter mb-4" data-aos="zoom-y-out"><span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-teal-400">Uncover</span> winning chess moves</h1>
                             <div className="max-w-3xl mx-auto">
-                                <p className="text-md sm:text-xl text-gray-600 mb-8 pt-5" data-aos="zoom-y-out" data-aos-delay="150">Automatically generate puzzles from your Chess games where you missed opportunities</p>
+                                <p className="text-md sm:text-xl text-gray-600 mb-8 pt-5" data-aos="zoom-y-out" data-aos-delay="150">Turn missed opportunities into learning exercises</p>
                                 <div className="max-w-xs mx-auto sm:max-w-none sm:flex sm:justify-center" data-aos="zoom-y-out" data-aos-delay="300">
                                     <Button
                                         variant="gradient" gradient={{ from: 'blue', to: 'cyan', deg: 90 }}

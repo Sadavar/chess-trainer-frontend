@@ -38,7 +38,7 @@ export default function Header() {
     const theme = useMantineTheme();
 
     return (
-        <Box pb={120}>
+        <Box pb={20} pt={20}>
             <header className={classes.header}>
                 <Group justify="space-between" h="100%">
                     <Text size="lg" weight={500}>
