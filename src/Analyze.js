@@ -118,8 +118,9 @@ export default function Analyze() {
         }
         setGameInfo(game_info);
 
-        const url = new URL('https://chess-trainer-python-b932ead51c12.herokuapp.com/getTactics');
+        // const url = new URL('https://chess-trainer-python-b932ead51c12.herokuapp.com/getTactics');
         // const url = new URL('http://127.0.0.1:5000/getTactics');
+        const url = new URL('https://chess-trainer-python-49bstp923-sadavars-projects.vercel.app' + '/getTactics');
         var response;
         // get tactics
         try {

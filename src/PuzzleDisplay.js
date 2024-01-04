@@ -4,7 +4,10 @@ import Puzzle from './Puzzle.js'
 import Chess from "chess";
 import { AppContext } from './AppContext';
 import { Button, Input, Col, Row, Space, Typography, Card } from 'antd'
+import axios from 'axios';
+
 const { Text, Link, Title } = Typography
+
 
 
 export default function PuzzleDisplay({ FEN_array }) {
