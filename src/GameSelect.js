@@ -161,8 +161,8 @@ export default function GameSelect() {
             var white = pgn.split("[White \"")[1].split("\"]")[0];
             var black = pgn.split("[Black \"")[1].split("\"]")[0];
             var result = pgn.split("[Result \"")[1].split("\"]")[0];
-            if (white == username) {
-                if (result == "1-0") {
+            if (white === username) {
+                if (result === "1-0") {
                     game.result = "W";
                     game.result_color = "green";
                 } else {
@@ -170,7 +170,7 @@ export default function GameSelect() {
                     game.result_color = "red";
                 }
             } else {
-                if (result == "1-0") {
+                if (result === "1-0") {
                     game.result = "L";
                     game.result_color = "red";
                 } else {
@@ -178,7 +178,7 @@ export default function GameSelect() {
                     game.result_color = "green";
                 }
             }
-            if (result == "1/2-1/2") {
+            if (result === "1/2-1/2") {
                 game.result = "D";
                 game.result_color = "grey";
             }
@@ -192,7 +192,7 @@ export default function GameSelect() {
     }, [games, activePage])
 
     function gamesPagination() {
-        if (games.length == 0) return;
+        if (games.length === 0) return;
 
         console.log("gamesPagination")
 

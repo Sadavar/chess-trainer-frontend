@@ -1,6 +1,4 @@
 import { useState, useContext, useEffect } from 'react';
-import { Chessboard } from "react-chessboard";
-import Chess from "chess";
 import PuzzleDisplay from './PuzzleDisplay.js';
 import { AppContext } from './AppContext.js';
 import axios from 'axios';
@@ -8,9 +6,8 @@ import { Chart as ChartJS, registerables } from 'chart.js';
 import { Chart } from 'react-chartjs-2'
 import Header from './Header.js';
 
-import { Grid, Space, Flex, Container, Center, Group } from '@mantine/core';
-import { Button, ActionIcon, Card, Title, Text, Image, TextInput, Badge } from '@mantine/core';
-import { Link } from "react-router-dom";
+import { Group } from '@mantine/core';
+import { Button, Card, Badge } from '@mantine/core';
 
 import GameSelect from "./GameSelect.js";
 
@@ -68,7 +65,7 @@ export default function Analyze() {
     }
 
     async function getPuzzles() {
-        if (selectedGames.length == 0) {
+        if (selectedGames.length === 0) {
             console.log("no games selected");
             return;
         }
@@ -90,7 +87,7 @@ export default function Analyze() {
             }
         }
 
-        if (tactics_found.length == 0) {
+        if (tactics_found.length === 0) {
             console.log("tactics array empty");
             setStatus(status_options.NoPuzzlesFound);
             return;
@@ -120,7 +117,8 @@ export default function Analyze() {
 
         // const url = new URL('https://chess-trainer-python-b932ead51c12.herokuapp.com/getTactics');
         // const url = new URL('http://127.0.0.1:5000/getTactics');
-        const url = new URL('https://chess-trainer-python-49bstp923-sadavars-projects.vercel.app' + '/getTactics');
+        const url = new URL('https://chess-trainer-python-2jxttd4vc-sadavars-projects.vercel.app' + '/getTactics');
+        // const url = new URL('https://web-production-27420.up.railway.app/getTactics');
         var response;
         // get tactics
         try {
@@ -167,7 +165,7 @@ export default function Analyze() {
         for await (chunk of stream) {
             console.log(chunk);
             // break if the chunk is an array
-            if (chunk[0] == '[') {
+            if (chunk[0] === '[') {
                 break;
             }
             // create data point
@@ -194,7 +192,7 @@ export default function Analyze() {
         }
         //last chunk is the tactics array
         var tactics = chunk;
-        if (tactics.length == 0) {
+        if (tactics.length === 0) {
             console.log("no tactics found");
             return [];
         }
@@ -205,7 +203,7 @@ export default function Analyze() {
     }
 
     function displayPuzzles() {
-        if (status == status_options.YesPuzzlesFound) {
+        if (status === status_options.YesPuzzlesFound) {
             return <PuzzleDisplay FEN_array={tactics} />;
         }
     }
@@ -234,13 +232,6 @@ export default function Analyze() {
         },
     }
 
-    useEffect(() => {
-        function handleResize() {
-            setWindowWidth(window.innerWidth);
-        }
-        window.addEventListener('resize', handleResize)
-    })
-
     function displayGameInfo() {
         return (
             <>
@@ -263,7 +254,7 @@ export default function Analyze() {
     }
 
     function displayLoading() {
-        if (status == status_options.LoadingPuzzles) {
+        if (status === status_options.LoadingPuzzles) {
             return (
                 <div className="h-3/5 grid grid-cols-12 gap-4 pt-5">
                     <div className="col-span-1"></div>
@@ -289,7 +280,7 @@ export default function Analyze() {
     }
 
     function displayAnalyzeButton() {
-        if (status == status_options.GameSelect && selectedGames.length > 0) {
+        if (status === status_options.GameSelect && selectedGames.length > 0) {
             return (
                 <div className="pt-5">
                     <Button
@@ -303,7 +294,7 @@ export default function Analyze() {
     }
 
     function displayGameSelect() {
-        if (status == status_options.GameSelect) {
+        if (status === status_options.GameSelect) {
             return (
                 <div className="flex flex-col items-center">
                     <div>
