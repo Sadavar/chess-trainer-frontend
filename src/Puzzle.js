@@ -6,6 +6,8 @@ import * as ChessJS from "chess.js";
 
 const Chess = typeof ChessJS === "function" ? ChessJS : ChessJS.Chess;
 
+
+
 const Puzzle = ({ start_FEN, end_FEN, turn_color, retryPuzzleRef, setGameStateRef }) => {
     const [game, setGame] = useState(new Chess());
     const [game_FEN, setGameFEN] = useState(start_FEN);

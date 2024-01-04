@@ -39,7 +39,6 @@ export default function GameSelect() {
             console.log("no games found");
             return;
         }
-        console.log(games_found);
         for (var game of games_found) {
             game.isSelected = false;
         }
@@ -147,7 +146,6 @@ export default function GameSelect() {
                 />
             </div>
         ))
-        console.log(items[0])
         setItems(items);
     }
 
@@ -191,26 +189,6 @@ export default function GameSelect() {
         if (games.length > 0) updateItems();
     }, [games, activePage])
 
-    function gamesPagination() {
-        if (games.length === 0) return;
-
-        console.log("gamesPagination")
-
-        return (
-            <>
-                <div className="w-screen flex flex-col items-center">
-                    <div>
-                        {items}
-                    </div>
-                    <div>
-                        <Pagination total={10} value={activePage} onChange={setActivePage} mt="sm" />
-                    </div>
-                </div>
-
-            </>
-        );
-    }
-
     return (
         <>
             <div className="flex flex-row justify-center gap-2">
@@ -229,7 +207,16 @@ export default function GameSelect() {
                 </div>
             </div>
             <div className="pt-10">
-                {gamesPagination()}
+                {games.length > 0 &&
+                    <div className="w-screen flex flex-col items-center">
+                        <div>
+                            {items}
+                        </div>
+                        <div>
+                            <Pagination total={10} value={activePage} onChange={setActivePage} mt="sm" />
+                        </div>
+                    </div>
+                }
             </div>
 
         </>

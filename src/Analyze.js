@@ -32,6 +32,30 @@ export default function Analyze() {
         ]
     });
 
+    var lineChartOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            x: {
+                title: {
+                    display: true,
+                    text: 'Move Number'
+                }
+            },
+            y: {
+                title: {
+                    display: true,
+                    text: 'Evaluation (CP)'
+                }
+            }
+        },
+        plugins: {
+            legend: {
+                display: false
+            }
+        },
+    }
+
     const status_options = {
         Empty: "",
         GameSelect: "GameSelect",
@@ -206,30 +230,6 @@ export default function Analyze() {
         if (status === status_options.YesPuzzlesFound) {
             return <PuzzleDisplay FEN_array={tactics} />;
         }
-    }
-
-    var lineChartOptions = {
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: {
-            x: {
-                title: {
-                    display: true,
-                    text: 'Move Number'
-                }
-            },
-            y: {
-                title: {
-                    display: true,
-                    text: 'Evaluation (CP)'
-                }
-            }
-        },
-        plugins: {
-            legend: {
-                display: false
-            }
-        },
     }
 
     function displayGameInfo() {
