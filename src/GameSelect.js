@@ -1,18 +1,10 @@
 import { useState, useContext, useEffect } from 'react';
-import { Chessboard } from "react-chessboard";
-import Chess from "chess";
-import PuzzleDisplay from './PuzzleDisplay.js';
 import { AppContext } from './AppContext.js';
 import axios from 'axios';
-import { Chart as ChartJS, registerables } from 'chart.js';
-import { Chart } from 'react-chartjs-2'
-import Header from './Header.js';
 
-import { Grid, Space, Flex, Container, Center, Group } from '@mantine/core';
-import { Button, ActionIcon, Card, Title, Text, Image, TextInput, Badge } from '@mantine/core';
+import { Button, TextInput, Badge } from '@mantine/core';
 import { Link } from "react-router-dom";
 
-import { randomId } from '@mantine/hooks';
 import { Pagination, Checkbox } from '@mantine/core';
 
 import test_games from './test_games.json'

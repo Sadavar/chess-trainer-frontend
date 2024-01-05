@@ -1,17 +1,6 @@
-import axios from 'axios';
-import { useState, useContext, useEffect } from 'react';
-import Chess from "chess";
-import { AppContext } from './AppContext';
 
-import { Chart as ChartJS, registerables } from 'chart.js';
-import { Chart } from 'react-chartjs-2'
-
-import { Chessboard } from "react-chessboard";
-import PuzzleDisplay from './PuzzleDisplay.js';
 import Header from './Header.js';
-
-import { Grid, Space, Flex, Container, Center, Group } from '@mantine/core';
-import { Button, ActionIcon, Card, Title, Text, Image } from '@mantine/core';
+import { Button, Image } from '@mantine/core';
 import { Link } from "react-router-dom";
 
 import AnalyzeGraph from './analyze_graph.png'
