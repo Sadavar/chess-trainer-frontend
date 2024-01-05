@@ -233,7 +233,6 @@ export default function Analyze() {
     function displayGameInfo() {
         return (
             <>
-
                 <Card shadow="lg" padding="lg" radius="lg" withBorder>
                     <Group justify="space-between" mt="md" mb="xs">
                         <h1 className="text-xl font-bold">Game Being Analyzed</h1>

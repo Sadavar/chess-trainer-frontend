@@ -11,7 +11,7 @@ export default function GameSelect() {
     const [activePage, setActivePage] = useState(1);
     const [curr_games, setCurrGames] = useState([]);
     const [items, setItems] = useState([]);
-    
+
     const { selectedGames, setSelectedGames } = useAppContext();
 
     async function handleGenerate() {
