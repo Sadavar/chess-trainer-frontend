@@ -1,8 +1,5 @@
 import Header from './Header.jsx';
 import { Button, Image } from '@mantine/core';
-
-import Header from './Header.js';
-import { Button, Image } from '@mantine/core';
 import { Link } from "react-router-dom";
 
 import AnalyzeGraph from './analyze_graph.png'
