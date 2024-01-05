@@ -1,11 +1,8 @@
-<<<<<<< HEAD:src/LandingPage.jsx
 import Header from './Header.jsx';
-import { Button, ActionIcon, Card, Title, Text, Image } from '@mantine/core';
-=======
+import { Button, Image } from '@mantine/core';
 
 import Header from './Header.js';
 import { Button, Image } from '@mantine/core';
->>>>>>> 711c666 (changes):src/LandingPage.js
 import { Link } from "react-router-dom";
 
 import AnalyzeGraph from './analyze_graph.png'

@@ -49,7 +49,7 @@ function Header() {
                         <a href="/Analyze" className={classes.link}>
                             Analyze
                         </a>
-                        <a href="/Puzzles" className={classes.link}>
+                        <a href="/" className={classes.link}>
                             Puzzles
                         </a>
                         <Button component={Link} to="/Login" >Login</Button>

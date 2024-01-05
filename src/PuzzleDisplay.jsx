@@ -1,13 +1,7 @@
 import { useState, useContext, useEffect, useRef } from 'react';
-<<<<<<< HEAD:src/PuzzleDisplay.jsx
 import Puzzle from './Puzzle.jsx'
 import { useAppContext } from './AppContext.jsx';
-=======
 import { Chessboard } from "react-chessboard";
-import Puzzle from './Puzzle.js'
-import { AppContext } from './AppContext';
-import { Button, Input, Col, Row, Space, Typography, Card } from 'antd'
->>>>>>> 711c666 (changes):src/PuzzleDisplay.js
 import axios from 'axios';
 import { Button } from '@mantine/core';
 
