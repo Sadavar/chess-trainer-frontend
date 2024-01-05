@@ -7,26 +7,19 @@ import * as ChessJS from "chess.js";
 const Chess = typeof ChessJS === "function" ? ChessJS : ChessJS.Chess;
 
 const Puzzle = ({ start_FEN, end_FEN, turn_color, retryPuzzleRef, setGameStateRef }) => {
-    const [game, setGame] = useState(null);
+    const [game, setGame] = useState(new Chess());
     const [game_FEN, setGameFEN] = useState(start_FEN);
     const [game_state, setGameState] = useState("");
 
     useEffect(() => {
-        if (game) {
-            setGameState("");
-            setGameFEN(start_FEN);
-            game.load(start_FEN)
-        }
-    }, [start_FEN, game])
-
-    useEffect(() => {
-        setGame(new Chess());
-    }, []);
+        setGameFEN(start_FEN);
+        setGameState("");
+    }, [start_FEN])
 
 
     // const game = new Chess();
-    // console.log("loading FEN: " + game_FEN);
-    // game.load(game_FEN);
+    console.log("loading FEN: " + game_FEN);
+    game.load(game_FEN);
 
 
     function onDrop(sourceSquare, targetSquare) {
