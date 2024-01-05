@@ -10,6 +10,7 @@ import { Group } from '@mantine/core';
 import { Button, Card, Badge } from '@mantine/core';
 
 import GameSelect from "./GameSelect.jsx";
+import { Chessboard } from "react-chessboard";
 
 ChartJS.register(...registerables);
 
@@ -308,18 +309,20 @@ export default function Analyze() {
     return (
         <>
             <div className="h-screen">
-                <div className="">
+                <div className="h-1/5">
                     <Header />
                     <h1 className="text-5xl text-center font-bold pb-5">Find Puzzles</h1>
                 </div>
-                <div>
-                    {displayGameSelect()}
-                </div>
-                <div>
-                    {displayLoading()}
-                </div>
-                <div>
-                    {displayPuzzles()}
+                <div className="h-4/5 pt-10">
+                    <div>
+                        {displayGameSelect()}
+                    </div>
+                    <div>
+                        {displayLoading()}
+                    </div>
+                    <div>
+                        {displayPuzzles()}
+                    </div>
                 </div>
             </div >
         </>
