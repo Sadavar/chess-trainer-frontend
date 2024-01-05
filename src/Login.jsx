@@ -1,15 +1,13 @@
 import React from 'react';
 import { GoogleLogin } from '@react-oauth/google';
 import { jwtDecode } from 'jwt-decode';
-import { useContext } from 'react';
-import { AppContext } from './AppContext';
+import { useAppContext } from './AppContext.jsx';
 import { HoverCard, Button, Text, Group } from '@mantine/core';
-import Header from './Header.js';
+import Header from './Header.jsx';
 
 
 export default function Login() {
-
-  const { user, setUser } = useContext(AppContext);
+  const { user, setUser } = useAppContext();
   // This function will be called upon a successful login
   const handleSuccess = (credentialResponse) => {
     // If you are using the authorization code flow, you will receive a code to be exchanged for an access token

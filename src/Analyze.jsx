@@ -1,15 +1,15 @@
 import { useState, useContext, useEffect } from 'react';
-import PuzzleDisplay from './PuzzleDisplay.js';
-import { AppContext } from './AppContext.js';
+import PuzzleDisplay from './PuzzleDisplay.jsx';
+import { useAppContext } from './AppContext.jsx';
 import axios from 'axios';
 import { Chart as ChartJS, registerables } from 'chart.js';
 import { Chart } from 'react-chartjs-2'
-import Header from './Header.js';
+import Header from './Header.jsx';
 
 import { Group } from '@mantine/core';
 import { Button, Card, Badge } from '@mantine/core';
 
-import GameSelect from "./GameSelect.js";
+import GameSelect from "./GameSelect.jsx";
 
 ChartJS.register(...registerables);
 
@@ -19,8 +19,7 @@ export default function Analyze() {
     const [tactics, setTactics] = useState([]);
     const [tacticsLoaded, setTacticsLoaded] = useState(false);
 
-    const { puzzle_counter, setPuzzleCounter } = useContext(AppContext);
-    const { selectedGames } = useContext(AppContext);
+    const { selectedGames, puzzle_counter, setPuzzleCounter } = useAppContext();
 
     const [lineChartData, setLineChartData] = useState({
         labels: [],
@@ -68,8 +67,6 @@ export default function Analyze() {
     const [game_info, setGameInfo] = useState({});
     const [window_width, setWindowWidth] = useState(window.innerWidth);
     const [loading_game_num, setLoadingGameNum] = useState(0);
-
-    var num_games_analyzing = selectedGames.length;
 
     async function* getIterableStream(body) {
         if (!body || !body.getReader) {
@@ -121,7 +118,7 @@ export default function Analyze() {
         setStatus(status_options.YesPuzzlesFound);
         console.log(tactics_found);
         setTactics(tactics_found);
-    };
+    }
 
     async function getTactics(pgn) {
         console.log("getting tactics of: " + pgn);
@@ -239,7 +236,7 @@ export default function Analyze() {
                 <Card shadow="lg" padding="lg" radius="lg" withBorder>
                     <Group justify="space-between" mt="md" mb="xs">
                         <h1 className="text-xl font-bold">Game Being Analyzed</h1>
-                        <Badge color="green"> {loading_game_num} / {num_games_analyzing}</Badge>
+                        <Badge color="green"> {loading_game_num} / {selectedGames.length}</Badge>
                     </Group>
                     <div> Date: {game_info.date} </div>
                     <div> White: {game_info.white} </div>

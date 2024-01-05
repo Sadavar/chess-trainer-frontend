@@ -17,7 +17,6 @@ import {
     rem,
     useMantineTheme,
 } from '@mantine/core';
-import { MantineLogo } from '@mantinex/mantine-logo';
 import { useDisclosure } from '@mantine/hooks';
 import {
     IconNotification,
@@ -31,8 +30,7 @@ import {
 import classes from './Header.module.css';
 import { Link } from "react-router-dom";
 
-
-export default function Header() {
+function Header() {
     const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] = useDisclosure(false);
     const [linksOpened, { toggle: toggleLinks }] = useDisclosure(false);
     const theme = useMantineTheme();
@@ -93,3 +91,5 @@ export default function Header() {
         </Box>
     );
 }
+
+export default Header;

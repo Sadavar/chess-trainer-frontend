@@ -1,22 +1,8 @@
 import { useState, useContext, useEffect } from 'react';
-import { Chessboard } from "react-chessboard";
-import Chess from "chess";
-import PuzzleDisplay from './PuzzleDisplay.js';
-import { AppContext } from './AppContext.js';
+import { useAppContext } from './AppContext.jsx';
 import axios from 'axios';
-import { Chart as ChartJS, registerables } from 'chart.js';
-import { Chart } from 'react-chartjs-2'
-import Header from './Header.js';
-
-import { Grid, Space, Flex, Container, Center, Group } from '@mantine/core';
 import { Button, ActionIcon, Card, Title, Text, Image, TextInput, Badge } from '@mantine/core';
-import { Link } from "react-router-dom";
-
-import { randomId } from '@mantine/hooks';
 import { Pagination, Checkbox } from '@mantine/core';
-
-import test_games from './test_games.json'
-
 
 export default function GameSelect() {
     const [username, setUsername] = useState('');
@@ -25,7 +11,8 @@ export default function GameSelect() {
     const [activePage, setActivePage] = useState(1);
     const [curr_games, setCurrGames] = useState([]);
     const [items, setItems] = useState([]);
-    const { selectedGames, setSelectedGames } = useContext(AppContext);
+    
+    const { selectedGames, setSelectedGames } = useAppContext();
 
     async function handleGenerate() {
         console.log("generating");
@@ -49,8 +36,9 @@ export default function GameSelect() {
         console.log("getting game archives of: " + username);
         var url = 'https://api.chess.com/pub/player/' + username + '/games/archives'
         console.log(url);
+        var res;
         try {
-            var res = await axios.get(url);
+            res = await axios.get(url);
         } catch (err) {
             console.log(err);
             return [];
@@ -64,7 +52,7 @@ export default function GameSelect() {
         while (num_games_found < 100) {
             url = new URL(archives[curr_archive_num]);
             try {
-                var res = await axios.get(url);
+                res = await axios.get(url);
             } catch (err) {
                 console.log(err);
                 return;
