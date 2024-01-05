@@ -35,7 +35,6 @@ export default function Login() {
         <GoogleLogin
           onSuccess={handleSuccess}
           onError={handleError}
-          useOneTap={true}
           flow="auth-code"
         />
       </div>
