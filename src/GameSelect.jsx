@@ -81,7 +81,7 @@ export default function GameSelect() {
         return [head, ...chunk(tail, size)];
     }
 
-    const handleCheckboxChange = (game) => {
+    function handleCheckboxChange(game) {
         console.log("checkbox changed");
 
         // Update games state with the new isSelected value for the clicked game
@@ -113,7 +113,7 @@ export default function GameSelect() {
 
         setGames(updatedGames);
         updateItems();
-    };
+    }
 
     function updateItems() {
         console.log("selected games")
@@ -177,6 +177,30 @@ export default function GameSelect() {
         if (games.length > 0) updateItems();
     }, [games, activePage])
 
+    function selectPage() {
+        console.log("selecting page");
+        var games_chunked = chunk(games, 10);
+        var curr_games = games_chunked[activePage - 1];
+        // set all games in current page to selected and add to selected games
+        var prev_games = games;
+        for (var game of prev_games) {
+            // if game is in curr_games, set isSelected to true
+            if (curr_games.includes(game)) {
+                game.isSelected = true;
+            }
+        }
+        setGames(prev_games);
+        // find selected games and add to selectedGames
+        var selected_games = [];
+        for (game of games) {
+            if (game.isSelected) {
+                selected_games.push(game);
+            }
+        }
+        setSelectedGames(selected_games);
+        updateItems();
+    }
+
     return (
         <>
             <div className="flex flex-row justify-center gap-2">
@@ -203,10 +227,10 @@ export default function GameSelect() {
                         <div>
                             <Pagination total={10} value={activePage} onChange={setActivePage} mt="sm" />
                         </div>
+                        <Button onClick={selectPage}>Select Page</Button>
                     </div>
                 }
             </div>
-
         </>
     );
 }

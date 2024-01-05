@@ -7,11 +7,14 @@ import { Button } from '@mantine/core';
 
 
 export default function PuzzleDisplay({ FEN_array }) {
-    const { puzzle_counter, setPuzzleCounter } = useAppContext();
     const retryPuzzleRef = useRef({ retryPuzzle: () => { } });
     const puzzleRef = useRef();
     const [window_width, setWindowWidth] = useState(window.innerWidth);
     const [game_state, setGameState] = useState("");
+
+    const { puzzle_counter, setPuzzleCounter } = useAppContext();
+    const { user } = useAppContext();
+
 
 
     useEffect(() => {
@@ -33,15 +36,23 @@ export default function PuzzleDisplay({ FEN_array }) {
     };
 
     function savePuzzle() {
+        if (!user) {
+            alert("Please login to save puzzles");
+            return;
+        }
         console.log("saving puzzle");
         var puzzle = {
             start_FEN: FEN_array[puzzle_counter][0],
             end_FEN: FEN_array[puzzle_counter][1],
             turn_color: FEN_array[puzzle_counter][2]
         }
+        var payload = {
+            user: user,
+            puzzle: puzzle
+        }
         console.log(puzzle);
-        var url = 'http://localhost:5000/savePuzzle';
-        axios.post(url, puzzle)
+        var url = 'http://127.0.0.1:5000/savePuzzle';
+        axios.post(url, payload)
             .then((res) => {
                 console.log(res);
             })
@@ -50,12 +61,8 @@ export default function PuzzleDisplay({ FEN_array }) {
             })
     }
 
-    useEffect(() => {
-        function handleResize() {
-            setWindowWidth(window.innerWidth);
-        }
-        window.addEventListener('resize', handleResize)
-    })
+
+
     return (
         <>
             <div className=" flex flex-col lg:grid lg:grid-cols-12">
@@ -72,6 +79,7 @@ export default function PuzzleDisplay({ FEN_array }) {
                     <h2>Puzzles: {FEN_array.length}</h2>
                     <Button onClick={nextPuzzle}>Next Puzzle</Button>
                     <Button onClick={retryPuzzle}>Retry Puzzle</Button>
+                    <Button onClick={savePuzzle}>Save Puzzle</Button>
                     <h2>{game_state}</h2>
                 </div>
             </div>

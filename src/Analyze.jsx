@@ -20,7 +20,20 @@ export default function Analyze() {
     const [tactics, setTactics] = useState([]);
     const [tacticsLoaded, setTacticsLoaded] = useState(false);
 
-    const { selectedGames, puzzle_counter, setPuzzleCounter } = useAppContext();
+    const { selectedGames, setSelectedGames, puzzle_counter, setPuzzleCounter } = useAppContext();
+
+    const status_options = {
+        Empty: "",
+        GameSelect: "GameSelect",
+        LoadingPuzzles: "LoadingPuzzles",
+        NoPuzzlesFound: "NoPuzzlesFound",
+        YesPuzzlesFound: "YesPuzzlesFound"
+    }
+
+    const [status, setStatus] = useState(status_options.GameSelect);
+    const [game_info, setGameInfo] = useState({});
+    const [window_width, setWindowWidth] = useState(window.innerWidth);
+    const [loading_game_num, setLoadingGameNum] = useState(0);
 
     const [lineChartData, setLineChartData] = useState({
         labels: [],
@@ -31,6 +44,14 @@ export default function Analyze() {
             }
         ]
     });
+
+    // reset selectedGames and puzzleCounter when the analyze page is loaded
+    useEffect(() => {
+        console.log("resetting selected games");
+        setSelectedGames([]);
+        setPuzzleCounter(0);
+    }, [])
+
 
     var lineChartOptions = {
         responsive: true,
@@ -56,18 +77,6 @@ export default function Analyze() {
         },
     }
 
-    const status_options = {
-        Empty: "",
-        GameSelect: "GameSelect",
-        LoadingPuzzles: "LoadingPuzzles",
-        NoPuzzlesFound: "NoPuzzlesFound",
-        YesPuzzlesFound: "YesPuzzlesFound"
-    }
-
-    const [status, setStatus] = useState(status_options.GameSelect);
-    const [game_info, setGameInfo] = useState({});
-    const [window_width, setWindowWidth] = useState(window.innerWidth);
-    const [loading_game_num, setLoadingGameNum] = useState(0);
 
     async function* getIterableStream(body) {
         if (!body || !body.getReader) {
@@ -269,6 +278,8 @@ export default function Analyze() {
 
     function handleAnalyze() {
         console.log("analyzing");
+        console.log("selected games");
+        console.log(selectedGames);
         setTacticsLoaded(false);
         setTactics([]);
         setPuzzleCounter(0);

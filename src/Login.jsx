@@ -24,6 +24,7 @@ export default function Login() {
   if (user) {
     return (
       <div>
+        <Header />
         <h1>Welcome {user}!</h1>
       </div>
     )

@@ -24,7 +24,7 @@ export default function LandingPage() {
                                     <Button
                                         variant="gradient" gradient={{ from: 'blue', to: 'cyan', deg: 90 }}
                                         className="gradientButton opacityHover"
-                                        component={Link} to="/Analyze"
+                                        component={Link} to="/analyze"
                                     >Get Started</Button>
                                 </div>
                             </div>
@@ -63,8 +63,8 @@ export default function LandingPage() {
                                         className={`flex items-center text-lg p-5 rounded border transition duration-300 ease-in-out mb-3 ${'bg-white shadow-md border-gray-200 hover:shadow-lg'}`}
                                     >
                                         <div>
-                                            <div className="font-bold leading-snug tracking-tight mb-1">Extract Games</div>
-                                            <div className="text-gray-600">Take collaboration to the next level with security and administrative features built for teams.</div>
+                                            <div className="font-bold leading-snug tracking-tight mb-1">Select Games</div>
+                                            <div className="text-gray-600">Retrieves your past 100 games on Chess.com and allows you to choose which games to analyze for puzzles</div>
                                         </div>
                                         <div className="flex justify-center items-center w-8 h-8 bg-white rounded-full shadow flex-shrink-0 ml-3">
                                             <svg className="w-3 h-3 fill-current" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
@@ -77,7 +77,7 @@ export default function LandingPage() {
                                     >
                                         <div>
                                             <div className="font-bold leading-snug tracking-tight mb-1">Analyze Games</div>
-                                            <div className="text-gray-600">Take collaboration to the next level with security and administrative features built for teams.</div>
+                                            <div className="text-gray-600">Checks for evaluation fluctuations and comparing your moves to Stockfish to identify missed tactics and opportunities</div>
                                         </div>
                                         <div className="flex justify-center items-center w-8 h-8 bg-white rounded-full shadow flex-shrink-0 ml-3">
                                             <svg className="w-3 h-3 fill-current" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
@@ -90,7 +90,7 @@ export default function LandingPage() {
                                     >
                                         <div>
                                             <div className="font-bold leading-snug tracking-tight mb-1">Build Puzzles</div>
-                                            <div className="text-gray-600">Take collaboration to the next level with security and administrative features built for teams.</div>
+                                            <div className="text-gray-600">Creates puzzles based on those missed tactics to allow you to practice and improve in those situations</div>
                                         </div>
                                         <div className="flex justify-center items-center w-8 h-8 bg-white rounded-full shadow flex-shrink-0 ml-3">
                                             <svg className="w-3 h-3 fill-current" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">

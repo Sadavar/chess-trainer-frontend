@@ -29,11 +29,25 @@ import {
 } from '@tabler/icons-react';
 import classes from './Header.module.css';
 import { Link } from "react-router-dom";
+import { useAppContext } from './AppContext.jsx';
 
 function Header() {
     const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] = useDisclosure(false);
     const [linksOpened, { toggle: toggleLinks }] = useDisclosure(false);
     const theme = useMantineTheme();
+    const { user, setUser } = useAppContext();
+
+    function loginandlogoutButton() {
+        if (user) {
+            return (
+                <Button component={Link} to="/" onClick={() => { setUser(null) }}> Logout </Button>
+            )
+        } else {
+            return (
+                <Button component={Link} to="/login">Login</Button>
+            )
+        }
+    }
 
     return (
         <Box pb={20} pt={20}>
@@ -43,16 +57,10 @@ function Header() {
                         Chess Trainer
                     </Text>
                     <Group h="100%" gap={0} visibleFrom="sm">
-                        <a href="/" className={classes.link}>
-                            Home
-                        </a>
-                        <a href="/Analyze" className={classes.link}>
-                            Analyze
-                        </a>
-                        <a href="/" className={classes.link}>
-                            Puzzles
-                        </a>
-                        <Button component={Link} to="/Login" >Login</Button>
+                        <Link to="/" className={classes.link}> Home </Link>
+                        <Link to="/analyze" className={classes.link}> Analyze </Link>
+                        <Link to="/mypuzzles" className={classes.link}> My Puzzles </Link>
+                        {loginandlogoutButton()}
                     </Group>
 
                     <Burger opened={drawerOpened} onClick={toggleDrawer} hiddenFrom="sm" />
@@ -71,18 +79,13 @@ function Header() {
                 <ScrollArea h={`calc(100vh - ${rem(80)})`} mx="-md">
                     <Divider my="sm" />
 
-                    <a href="/" className={classes.link}>
-                        Home
-                    </a>
-                    <a href="/Analyze" className={classes.link}>
-                        Analyze
-                    </a>
-                    <a href="/Puzzles" className={classes.link}>
-                        Puzzles
-                    </a>
+                    <Link to="/" className={classes.link}> Home </Link>
+                    <Link to="/analyze" className={classes.link}> Analyze </Link>
+                    <Link to="/mypuzzles" className={classes.link}> My Puzzles </Link>
+                    {loginandlogoutButton()}
                     <Divider my="sm" />
                     <Group justify="center" grow pb="xl" px="md">
-                        <Button component={Link} to="/Login">Login</Button>
+                        <Button component={Link} to="/login">Login</Button>
                     </Group>
                 </ScrollArea>
             </Drawer>

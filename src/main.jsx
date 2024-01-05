@@ -1,6 +1,5 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import App from './App3.jsx'
 import './index.css'
 import '@mantine/core/styles.css';
 import { MantineProvider } from '@mantine/core';
@@ -9,12 +8,25 @@ import {
   createBrowserRouter,
   RouterProvider,
 } from "react-router-dom";
+
+import App from './App.jsx'
 import LandingPage from './LandingPage.jsx';
 import Analyze from './Analyze.jsx';
 import Login from './Login.jsx';
 import GameSelect from './GameSelect.jsx';
+import MyPuzzles from './MyPuzzles.jsx';
 
-import {AppProvider} from './AppContext.jsx';
+import { useAppContext, AppProvider } from './AppContext.jsx';
+import { Navigate, Outlet } from 'react-router-dom';
+
+
+const ProtectedRoutes = () => {
+  const { user } = useAppContext();
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+  return <Outlet />;
+};
 
 
 const router = createBrowserRouter([
@@ -23,27 +35,34 @@ const router = createBrowserRouter([
     element: <LandingPage />,
   },
   {
-    path: "/Login",
+    path: "/login",
     element: <Login />,
   },
   {
-    path: "/Analyze",
+    path: "/analyze",
     element: <Analyze />,
-  }
+  },
+  {
+    element: <ProtectedRoutes />,
+    children: [
+      {
+        path: "/mypuzzles",
+        element: <MyPuzzles />,
+      },
+    ],
+  },
 ]);
+
+// import.meta.env.VITE_GOOGLE_CLIENT_ID
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <React.StrictMode>
-    <MantineProvider>
-    <AppProvider>
+  <AppProvider>
     <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
-      <RouterProvider router={router}>
-            <App />
-      </RouterProvider>
-      </GoogleOAuthProvider>
-      </AppProvider>
-    </MantineProvider>
-  </React.StrictMode>
+      <MantineProvider>
+        <RouterProvider router={router} />
+      </MantineProvider>
+    </GoogleOAuthProvider>
+  </AppProvider>
 );
