@@ -52,7 +52,7 @@ function Header() {
                         <a href="/Puzzles" className={classes.link}>
                             Puzzles
                         </a>
-                        <Button component={Link} to="/login" >Log in</Button>
+                        <Button component={Link} to="/Login" >Login</Button>
                     </Group>
 
                     <Burger opened={drawerOpened} onClick={toggleDrawer} hiddenFrom="sm" />
@@ -71,20 +71,18 @@ function Header() {
                 <ScrollArea h={`calc(100vh - ${rem(80)})`} mx="-md">
                     <Divider my="sm" />
 
-                    <a href="#" className={classes.link}>
+                    <a href="/" className={classes.link}>
                         Home
                     </a>
-                    <a href="#" className={classes.link}>
+                    <a href="/Analyze" className={classes.link}>
                         Analyze
                     </a>
-                    <a href="#" className={classes.link}>
-                        Features
+                    <a href="/Puzzles" className={classes.link}>
+                        Puzzles
                     </a>
-
                     <Divider my="sm" />
                     <Group justify="center" grow pb="xl" px="md">
-                        <Button variant="default">Log in</Button>
-                        <Button>Sign up</Button>
+                        <Button component={Link} to="/Login">Login</Button>
                     </Group>
                 </ScrollArea>
             </Drawer>
