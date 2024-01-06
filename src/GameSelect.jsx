@@ -1,7 +1,7 @@
 import { useState, useContext, useEffect } from 'react';
 import { useAppContext } from './AppContext.jsx';
 import axios from 'axios';
-import { Button, ActionIcon, Card, Title, Text, Image, TextInput, Badge } from '@mantine/core';
+import { Button, ActionIcon, Card, Title, Text, Image, TextInput, Badge, Table } from '@mantine/core';
 import { Pagination, Checkbox } from '@mantine/core';
 
 export default function GameSelect() {
@@ -123,16 +123,26 @@ export default function GameSelect() {
         var curr_games = games_chunked[activePage - 1];
 
         var items = curr_games.map((game) => (
-            <div key={game.url} className="flex flex-row justify-around gap-5 pb-2 ">
-                {/* Date Result Blitz/Rapid SelectButton*/}
-                <Badge color="blue">{game.date}</Badge>
-                <Badge color={game.result_color}>{game.result}</Badge>
-                <Badge color="blue">{game.time_class}</Badge>
-                <Checkbox
-                    checked={game.isSelected}
-                    onChange={() => handleCheckboxChange(game)}
-                />
-            </div>
+            // <div key={game.url} className="flex flex-row justify-around gap-5 pb-2">
+            //     <Badge color="blue">{game.date}</Badge>
+            //     <Badge color={game.result_color}>{game.result}</Badge>
+            //     <Badge color="blue">{game.time_class}</Badge>
+            // <Checkbox
+            //     checked={game.isSelected}
+            //     onChange={() => handleCheckboxChange(game)}
+            // />
+            // </div>
+            <Table.Tr key={game.url}>
+                <Table.Td className="text-center"><Badge color="blue">{game.date}</Badge></Table.Td>
+                <Table.Td className="text-center"><Badge color={game.result_color}>{game.result}</Badge></Table.Td>
+                <Table.Td className="text-center"><Badge color="blue">{game.time_class}</Badge></Table.Td>
+                <Table.Td className="flex justify-center">
+                    <Checkbox
+                        checked={game.isSelected}
+                        onChange={() => handleCheckboxChange(game)}
+                    />
+                </Table.Td>
+            </Table.Tr>
         ))
         setItems(items);
     }
@@ -218,16 +228,30 @@ export default function GameSelect() {
                     >Generate</Button>
                 </div>
             </div>
-            <div className="pt-10">
+            <div className="pt-5">
                 {games.length > 0 &&
                     <div className="w-screen flex flex-col items-center">
-                        <div>
-                            {items}
+                        <div className="outline-slate-100 outline rounded-md grid grid-cols-1 shadow-lg">
+                            {/* {items} */}
+                            <Table>
+                                <Table.Thead>
+                                    <Table.Tr>
+                                        <Table.Th className="flex justify-center">Date</Table.Th>
+                                        <Table.Th>Result</Table.Th>
+                                        <Table.Th>Time Control</Table.Th>
+                                        <Table.Th>Select</Table.Th>
+                                    </Table.Tr>
+                                </Table.Thead>
+                                <Table.Tbody>{items}</Table.Tbody>
+                            </Table>
                         </div>
-                        <div>
+                        <div className="pb-5">
                             <Pagination total={10} value={activePage} onChange={setActivePage} mt="sm" />
                         </div>
-                        <Button onClick={selectPage}>Select Page</Button>
+                        <Button className="h-8 px-4 m-2 text-sm" onClick={selectPage}>Select Page</Button>
+                        {/* <button onClick={selectPage} className="h-8 px-4 m-2 text-sm bg-blue-500 hover:bg-blue-600 transition-colors duration-150 text-white font-bold rounded-md">
+                            Select Page
+                        </button> */}
                     </div>
                 }
             </div>

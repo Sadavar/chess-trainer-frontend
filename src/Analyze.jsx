@@ -308,7 +308,7 @@ export default function Analyze() {
                     <div>
                         <GameSelect />
                     </div>
-                    <div>
+                    <div className="">
                         {displayAnalyzeButton()}
                     </div>
                 </div>
@@ -323,7 +323,7 @@ export default function Analyze() {
                     <Header />
                     <h1 className="text-5xl text-center font-bold pb-5">Find Puzzles</h1>
                 </div>
-                <div className="h-4/5 pt-10">
+                <div className="h-4/5 pt-5">
                     <div>
                         {displayGameSelect()}
                     </div>
