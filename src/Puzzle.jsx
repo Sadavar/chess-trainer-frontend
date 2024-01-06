@@ -12,7 +12,7 @@ const Puzzle = ({ start_FEN, end_FEN, turn_color, retryPuzzleRef, setGameStateRe
 
     useEffect(() => {
         if (game) {
-            setGameState("");
+            setGameState("Playing");
             setGameFEN(start_FEN);
             game.load(start_FEN)
         }
@@ -30,7 +30,7 @@ const Puzzle = ({ start_FEN, end_FEN, turn_color, retryPuzzleRef, setGameStateRe
 
     function onDrop(sourceSquare, targetSquare) {
         // console.log(game.moves());
-        if (game_state === "Correct!" || game_state === "Incorrect") return false;
+        if (game_state === "Correct" || game_state === "Incorrect") return false;
         const move = makeAMove({
             from: sourceSquare,
             to: targetSquare,
@@ -62,7 +62,7 @@ const Puzzle = ({ start_FEN, end_FEN, turn_color, retryPuzzleRef, setGameStateRe
 
         if (game.fen() === end_FEN) {
             console.log("puzzle solved!");
-            setGameState("Correct!");
+            setGameState("Correct");
         } else {
             console.log("puzzle not solved");
             setGameState("Incorrect");
@@ -74,7 +74,7 @@ const Puzzle = ({ start_FEN, end_FEN, turn_color, retryPuzzleRef, setGameStateRe
     const retryPuzzle = () => {
         game.load(start_FEN);
         setGameFEN(start_FEN);
-        setGameState("");
+        setGameState("Playing");
     };
 
     // Pass the retryPuzzle function to the parent component

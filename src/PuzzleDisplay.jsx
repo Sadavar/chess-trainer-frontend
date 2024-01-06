@@ -66,7 +66,7 @@ export default function PuzzleDisplay({ FEN_array }) {
     return (
         <>
             <div className=" flex flex-col lg:grid lg:grid-cols-12">
-                <div className=" col-start-3 col-span-4">
+                <div className="col-start-3 col-span-4">
                     <Puzzle
                         start_FEN={FEN_array[puzzle_counter][0]}
                         end_FEN={FEN_array[puzzle_counter][1]}
@@ -75,7 +75,7 @@ export default function PuzzleDisplay({ FEN_array }) {
                         setGameStateRef={setGameState}
                     />
                 </div>
-                <div className="col-span-5 flex flex-col gap-1 items-center h-1/2">
+                <div className="bg-blue-200 col-span-5 flex flex-col gap-1 items-center h-1/2">
                     <h2>Puzzles: {FEN_array.length}</h2>
                     <Button onClick={nextPuzzle}>Next Puzzle</Button>
                     <Button onClick={retryPuzzle}>Retry Puzzle</Button>

@@ -51,7 +51,7 @@ function Header() {
     }
 
     return (
-        <Box pb={20} pt={20}>
+        <Box pb={20}>
             <header className={classes.header}>
                 <Group justify="space-between" h="100%">
                     <Text size="lg" weight={500}>
@@ -85,7 +85,6 @@ function Header() {
                     <Link to="/mypuzzles" className={classes.link}> My Puzzles </Link>
                     <Divider my="sm" />
                     <Group justify="center" grow pb="xl" px="md">
-                        <Button component={Link} to="/login">Login</Button>
                         {loginandlogoutButton()}
                     </Group>
                 </ScrollArea>
