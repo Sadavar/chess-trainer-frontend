@@ -32,12 +32,14 @@ export default function Login() {
     return (
       <div>
         <Header />
-        <h1>Please login</h1>
-        <GoogleLogin
-          onSuccess={handleSuccess}
-          onError={handleError}
-          flow="auth-code"
-        />
+        <div className="flex flex-col items-center">
+          <h1 className="text-5xl font-bold pb-5">Login</h1>
+          <GoogleLogin
+            onSuccess={handleSuccess}
+            onError={handleError}
+            flow="auth-code"
+          />
+        </div>
       </div>
     );
   }

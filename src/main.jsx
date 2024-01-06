@@ -53,7 +53,9 @@ const router = createBrowserRouter([
   },
 ]);
 
-// import.meta.env.VITE_GOOGLE_CLIENT_ID
+
+if (import.meta.env.NODE_ENV !== "development")
+  console.log = () => { };
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));

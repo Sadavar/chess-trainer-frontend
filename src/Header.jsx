@@ -30,6 +30,7 @@ import {
 import classes from './Header.module.css';
 import { Link } from "react-router-dom";
 import { useAppContext } from './AppContext.jsx';
+import { GoogleLogin } from '@react-oauth/google';
 
 function Header() {
     const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] = useDisclosure(false);
@@ -82,10 +83,10 @@ function Header() {
                     <Link to="/" className={classes.link}> Home </Link>
                     <Link to="/analyze" className={classes.link}> Analyze </Link>
                     <Link to="/mypuzzles" className={classes.link}> My Puzzles </Link>
-                    {loginandlogoutButton()}
                     <Divider my="sm" />
                     <Group justify="center" grow pb="xl" px="md">
                         <Button component={Link} to="/login">Login</Button>
+                        {loginandlogoutButton()}
                     </Group>
                 </ScrollArea>
             </Drawer>
