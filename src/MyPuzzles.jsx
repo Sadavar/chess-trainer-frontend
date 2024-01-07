@@ -15,7 +15,7 @@ export default function MyPuzzles() {
 
 
     function getPuzzles() {
-        const url = new URL('https://chess-trainer-python-b932ead51c12.herokuapp.com/getPuzzles');
+        const url = new URL(import.meta.env.VITE_BACKEND_URL + '/getPuzzles')
         var payload = {
             user: user
         }
@@ -23,13 +23,13 @@ export default function MyPuzzles() {
             .then((res) => {
                 console.log(res);
                 let data = res.data;
-                let new_puzzles = [];
-                for (var i = 0; i < 4; i++) {
-                    for (var j = 0; j < data.length; j++) {
-                        new_puzzles.push(data[j]);
-                    }
-                }
-                setPuzzles(new_puzzles);
+                // let new_puzzles = [];
+                // for (var i = 0; i < 4; i++) {
+                //     for (var j = 0; j < data.length; j++) {
+                //         new_puzzles.push(data[j]);
+                //     }
+                // }
+                setPuzzles(data);
             })
             .catch((err) => {
                 console.log(err);
