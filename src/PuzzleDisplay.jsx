@@ -97,7 +97,8 @@ export default function PuzzleDisplay({ puzzles_array, isPlaying }) {
             puzzle: puzzle
         }
         console.error(puzzle);
-        var url = 'http://127.0.0.1:5000/savePuzzle';
+        const url = new URL('https://chess-trainer-python-b932ead51c12.herokuapp.com/savePuzzle');
+
         axios.post(url, payload)
             .then((res) => {
                 console.log(res);

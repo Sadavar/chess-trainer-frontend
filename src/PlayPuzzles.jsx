@@ -11,36 +11,6 @@ import { Link } from 'react-router-dom';
 export default function PlayPuzzles() {
 
     const { user, puzzles_array_play, setPuzzlesArrayPlay } = useAppContext();
-    const [puzzles, setPuzzles] = useState([]);
-
-    function getPuzzles() {
-
-
-        var url = 'http://127.0.0.1:5000/getPuzzles';
-        var payload = {
-            user: user
-        }
-        axios.post(url, payload)
-            .then((res) => {
-                console.log(res);
-                let data = res.data;
-                let new_puzzles = [];
-                for (var i = 0; i < 4; i++) {
-                    for (var j = 0; j < data.length; j++) {
-                        new_puzzles.push(data[j]);
-                    }
-                }
-                setPuzzles(new_puzzles);
-            })
-            .catch((err) => {
-                console.log(err);
-            })
-    }
-
-    useEffect(() => {
-        console.log("getting puzzles");
-        getPuzzles();
-    }, [])
 
     return (
         <div>

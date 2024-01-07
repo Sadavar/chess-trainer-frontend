@@ -15,7 +15,7 @@ export default function MyPuzzles() {
 
 
     function getPuzzles() {
-        var url = 'http://127.0.0.1:5000/getPuzzles';
+        const url = new URL('https://chess-trainer-python-b932ead51c12.herokuapp.com/getPuzzles');
         var payload = {
             user: user
         }
