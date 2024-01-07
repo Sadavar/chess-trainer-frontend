@@ -17,10 +17,9 @@ ChartJS.register(...registerables);
 
 export default function Analyze() {
     const [username, setUsername] = useState('');
-    const [tactics, setTactics] = useState([]);
-    const [tacticsLoaded, setTacticsLoaded] = useState(false);
+    const [puzzles_found, setPuzzlesFound] = useState();
 
-    const { selectedGames, setSelectedGames, puzzle_counter, setPuzzleCounter } = useAppContext();
+    const { selected_games_analyze, setSelectedGamesAnalyze } = useAppContext();
 
     const status_options = {
         Empty: "",
@@ -32,7 +31,6 @@ export default function Analyze() {
 
     const [status, setStatus] = useState(status_options.GameSelect);
     const [game_info, setGameInfo] = useState({});
-    const [window_width, setWindowWidth] = useState(window.innerWidth);
     const [loading_game_num, setLoadingGameNum] = useState(0);
 
     const [lineChartData, setLineChartData] = useState({
@@ -44,14 +42,6 @@ export default function Analyze() {
             }
         ]
     });
-
-    // reset selectedGames and puzzleCounter when the analyze page is loaded
-    useEffect(() => {
-        console.log("resetting selected games");
-        setSelectedGames([]);
-        setPuzzleCounter(0);
-    }, [])
-
 
     var lineChartOptions = {
         responsive: true,
@@ -77,6 +67,11 @@ export default function Analyze() {
         },
     }
 
+    // reset selectedGames and puzzleCounter when the analyze page is loaded
+    useEffect(() => {
+        console.error("resetting selected games");
+        setSelectedGamesAnalyze([]);
+    }, [])
 
     async function* getIterableStream(body) {
         if (!body || !body.getReader) {
@@ -96,43 +91,55 @@ export default function Analyze() {
     }
 
     async function getPuzzles() {
-        if (selectedGames.length === 0) {
-            console.log("no games selected");
+        if (selected_games_analyze.length === 0) {
+            console.error("no games selected");
             return;
         }
-        // Generate tactics from the games
         setStatus(status_options.LoadingPuzzles);
-        var tactics_found = [];
+        var puzzles = [];
         var game_num = 0;
-        for (var game of selectedGames) {
+        for (var game of selected_games_analyze) {
             game_num++;
             setLoadingGameNum(game_num);
             try {
-                var tactic = await getTactics(game.pgn);
-                if (tactic != null) {
-                    tactics_found = tactics_found.concat(tactic);
+                var tactics = await getTactics(game.pgn);
+                console.error("tactics: ");
+                console.error(tactics);
+                if (tactics != null && tactics.length > 0) {
+                    var info = getGameInfo(game.pgn);
+                    for (var obj of tactics) {
+                        var puzzle = {
+                            start_FEN: obj.start_FEN,
+                            end_FEN: obj.end_FEN,
+                            turn_color: obj.turn_color,
+                            game_info: info,
+                        }
+                        console.error("puzzles before: ");
+                        console.error(puzzles);
+                        puzzles = puzzles.concat(puzzle);
+                        console.error("puzzles after: ");
+                        console.error(puzzles);
+                    }
                 }
             } catch (err) {
-                console.log(err);
+                console.error(err);
                 continue;
             }
         }
 
-        if (tactics_found.length === 0) {
-            console.log("tactics array empty");
+        if (puzzles.length === 0) {
+            console.error("puzzles array empty");
             setStatus(status_options.NoPuzzlesFound);
             return;
         }
 
-        console.log("Puzzles Found");
+        console.error("Puzzles Found");
         setStatus(status_options.YesPuzzlesFound);
-        console.log(tactics_found);
-        setTactics(tactics_found);
+        console.error(puzzles);
+        setPuzzlesFound(puzzles);
     }
 
-    async function getTactics(pgn) {
-        console.log("getting tactics of: " + pgn);
-
+    function getGameInfo(pgn) {
         var info = pgn.split('\n');
 
         var game_info = {
@@ -142,12 +149,20 @@ export default function Analyze() {
             result: info[5].split('"')[1],
             white_elo: info[13].split('"')[1],
             black_elo: info[14].split('"')[1],
-            time_control: info[15].split('"')[1]
+            time_control: info[15].split('"')[1],
+            link: info[20].split('"')[1]
         }
-        setGameInfo(game_info);
+        return game_info;
+    }
 
-        const url = new URL('https://chess-trainer-python-b932ead51c12.herokuapp.com/getTactics');
-        // const url = new URL('http://127.0.0.1:5000/getTactics');
+    async function getTactics(pgn) {
+        console.error("getting tactics of: " + pgn);
+
+        var info = getGameInfo(pgn);
+        setGameInfo(info);
+
+        // const url = new URL('https://chess-trainer-python-b932ead51c12.herokuapp.com/getTactics');
+        const url = new URL('http://127.0.0.1:5000/getTactics');
         // const url = new URL('https://chess-trainer-python-2jxttd4vc-sadavars-projects.vercel.app' + '/getTactics');
         // const url = new URL('https://web-production-27420.up.railway.app/getTactics');
         var response;
@@ -170,7 +185,7 @@ export default function Analyze() {
             if (response.status !== 200) throw new Error(response.status.toString())
             if (!response.body) throw new Error('Response body does not exist')
         } catch (err) {
-            console.log(err);
+            console.error(err);
             return [];
         }
 
@@ -194,7 +209,7 @@ export default function Analyze() {
         lineChartData.labels = [];
 
         for await (chunk of stream) {
-            console.log(chunk);
+            console.error(chunk);
             // break if the chunk is an array
             if (chunk[0] === '[') {
                 break;
@@ -205,8 +220,6 @@ export default function Analyze() {
             var old_chart_data = lineChartData.datasets[0];
             var new_chart_data = { ...old_chart_data };
             new_chart_data.data.push(data);
-            console.log("new chart data: " + new_chart_data.data);
-
             labels_arr.push(chunk_num);
 
             const newChartData = {
@@ -214,28 +227,40 @@ export default function Analyze() {
                 datasets: [new_chart_data],
                 labels: labels_arr
             };
-
-            console.log("labels: " + newChartData.labels);
-            console.log("data: " + newChartData.datasets[0].data);
-
             setLineChartData(newChartData);
             chunk_num++;
         }
         //last chunk is the tactics array
         var tactics = chunk;
         if (tactics.length === 0) {
-            console.log("no tactics found");
+            console.error("no tactics found");
             return [];
         }
+        console.error("Tactics before parse:")
+        console.error(tactics);
         tactics = JSON.parse(tactics);
-        console.log("tactics found: ");
-        console.log(tactics);
-        return tactics;
+        console.error("tactics found: ");
+        console.error(tactics);
+
+        var tactics_found = [];
+        for (var element of tactics) {
+            var tactic = {
+                start_FEN: element[0],
+                end_FEN: element[1],
+                turn_color: element[2]
+            }
+            tactics_found.push(tactic);
+        }
+        console.error("tactics found: ");
+        console.error(tactics_found);
+        return tactics_found;
     }
 
     function displayPuzzles() {
         if (status === status_options.YesPuzzlesFound) {
-            return <PuzzleDisplay FEN_array={tactics} />;
+            console.error("displaying puzzles");
+            console.error(puzzles_found);
+            return <PuzzleDisplay puzzles_array={puzzles_found} isPlaying={false} />;
         }
     }
 
@@ -245,7 +270,7 @@ export default function Analyze() {
                 <Card shadow="lg" padding="lg" radius="lg" withBorder>
                     <Group justify="space-between" mt="md" mb="xs">
                         <h1 className="text-xl font-bold">Game Being Analyzed</h1>
-                        <Badge color="green"> {loading_game_num} / {selectedGames.length}</Badge>
+                        <Badge color="green"> {loading_game_num} / {selected_games_analyze.length}</Badge>
                     </Group>
                     <div> Date: {game_info.date} </div>
                     <div> White: {game_info.white} </div>
@@ -277,18 +302,16 @@ export default function Analyze() {
     }
 
     function handleAnalyze() {
-        console.log("analyzing");
-        console.log("selected games");
-        console.log(selectedGames);
-        setTacticsLoaded(false);
-        setTactics([]);
-        setPuzzleCounter(0);
+        console.error("analyzing");
+        console.error("selected games");
+        console.error(selected_games_analyze);
+        setPuzzlesFound([]);
 
         getPuzzles();
     }
 
     function displayAnalyzeButton() {
-        if (status === status_options.GameSelect && selectedGames.length > 0) {
+        if (status === status_options.GameSelect && selected_games_analyze.length > 0) {
             return (
                 <div className="pt-5">
                     <Button

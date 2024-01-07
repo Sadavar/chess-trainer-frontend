@@ -12,11 +12,12 @@ export default function GameSelect() {
     const [curr_games, setCurrGames] = useState([]);
     const [items, setItems] = useState([]);
 
-    const { selectedGames, setSelectedGames } = useAppContext();
+    const { selected_games_analyze, setSelectedGamesAnalyze } = useAppContext();
+
 
     async function handleGenerate() {
-        console.log("generating");
-        setSelectedGames([]);
+        console.error("generating");
+        setSelectedGamesAnalyze([]);
         setActivePage(1);
         setItems([]);
         setGames([]);
@@ -72,81 +73,6 @@ export default function GameSelect() {
         return games_found;
     }
 
-    function chunk(array, size) {
-        if (!array.length) {
-            return [];
-        }
-        const head = array.slice(0, size);
-        const tail = array.slice(size);
-        return [head, ...chunk(tail, size)];
-    }
-
-    function handleCheckboxChange(game) {
-        console.log("checkbox changed");
-
-        // Update games state with the new isSelected value for the clicked game
-        const updatedGames = games.map((gameItem) =>
-            gameItem.url === game.url ? { ...gameItem, isSelected: !gameItem.isSelected } : gameItem
-        );
-
-        // Update selectedGames based on the checkbox status
-        setSelectedGames((prevSelectedGames) => {
-            const index = prevSelectedGames.findIndex((gameItem) => gameItem.url === game.url);
-
-            if (!game.isSelected) {
-                console.log("adding game");
-                if (index === -1) {
-                    // Add the game if it doesn't exist in the array
-                    return [...prevSelectedGames, game];
-                }
-            } else {
-                console.log("deleting game");
-                if (index !== -1) {
-                    // Remove the game if it exists in the array
-                    return [...prevSelectedGames.slice(0, index), ...prevSelectedGames.slice(index + 1)];
-                }
-            }
-
-            // If no changes, return the current state
-            return prevSelectedGames;
-        });
-
-        setGames(updatedGames);
-        updateItems();
-    }
-
-    function updateItems() {
-        console.log("selected games")
-        console.log(selectedGames)
-        console.log("getting items")
-        var games_chunked = chunk(games, 10);
-        var curr_games = games_chunked[activePage - 1];
-
-        var items = curr_games.map((game) => (
-            // <div key={game.url} className="flex flex-row justify-around gap-5 pb-2">
-            //     <Badge color="blue">{game.date}</Badge>
-            //     <Badge color={game.result_color}>{game.result}</Badge>
-            //     <Badge color="blue">{game.time_class}</Badge>
-            // <Checkbox
-            //     checked={game.isSelected}
-            //     onChange={() => handleCheckboxChange(game)}
-            // />
-            // </div>
-            <Table.Tr key={game.url}>
-                <Table.Td className="text-center"><Badge color="blue">{game.date}</Badge></Table.Td>
-                <Table.Td className="text-center"><Badge color={game.result_color}>{game.result}</Badge></Table.Td>
-                <Table.Td className="text-center"><Badge color="blue">{game.time_class}</Badge></Table.Td>
-                <Table.Td className="flex justify-center">
-                    <Checkbox
-                        checked={game.isSelected}
-                        onChange={() => handleCheckboxChange(game)}
-                    />
-                </Table.Td>
-            </Table.Tr>
-        ))
-        setItems(items);
-    }
-
     function cleanGames(initial_games) {
         for (var game of initial_games) {
             //get date of the game from the pgn
@@ -183,6 +109,72 @@ export default function GameSelect() {
         setGames(initial_games);
     }
 
+    function chunk(array, size) {
+        if (!array.length) {
+            return [];
+        }
+        const head = array.slice(0, size);
+        const tail = array.slice(size);
+        return [head, ...chunk(tail, size)];
+    }
+
+    function handleCheckboxChange(game) {
+        console.log("checkbox changed");
+
+        // Update games state with the new isSelected value for the clicked game
+        const updatedGames = games.map((gameItem) =>
+            gameItem.url === game.url ? { ...gameItem, isSelected: !gameItem.isSelected } : gameItem
+        );
+
+        // Update selectedGames based on the checkbox status
+        setSelectedGamesAnalyze((prevSelectedGames) => {
+            const index = prevSelectedGames.findIndex((gameItem) => gameItem.url === game.url);
+
+            if (!game.isSelected) {
+                console.log("adding game");
+                if (index === -1) {
+                    // Add the game if it doesn't exist in the array
+                    return [...prevSelectedGames, game];
+                }
+            } else {
+                console.log("deleting game");
+                if (index !== -1) {
+                    // Remove the game if it exists in the array
+                    return [...prevSelectedGames.slice(0, index), ...prevSelectedGames.slice(index + 1)];
+                }
+            }
+
+            // If no changes, return the current state
+            return prevSelectedGames;
+        });
+
+        setGames(updatedGames);
+        updateItems();
+    }
+
+    function updateItems() {
+        console.log("selected games")
+        console.log(selected_games_analyze)
+        console.log("getting items")
+        var games_chunked = chunk(games, 10);
+        var curr_games = games_chunked[activePage - 1];
+
+        var items = curr_games.map((game) => (
+            <Table.Tr key={game.url}>
+                <Table.Td className="text-center"><Badge color="blue">{game.date}</Badge></Table.Td>
+                <Table.Td className="text-center"><Badge color={game.result_color}>{game.result}</Badge></Table.Td>
+                <Table.Td className="text-center"><Badge color="blue">{game.time_class}</Badge></Table.Td>
+                <Table.Td className="flex justify-center">
+                    <Checkbox
+                        checked={game.isSelected}
+                        onChange={() => handleCheckboxChange(game)}
+                    />
+                </Table.Td>
+            </Table.Tr>
+        ))
+        setItems(items);
+    }
+
     useEffect(() => {
         if (games.length > 0) updateItems();
     }, [games, activePage])
@@ -207,7 +199,7 @@ export default function GameSelect() {
                 selected_games.push(game);
             }
         }
-        setSelectedGames(selected_games);
+        setSelectedGamesAnalyze(selected_games);
         updateItems();
     }
 

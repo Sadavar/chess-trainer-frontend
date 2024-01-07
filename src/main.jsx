@@ -15,7 +15,8 @@ import Analyze from './Analyze.jsx';
 import Login from './Login.jsx';
 import GameSelect from './GameSelect.jsx';
 import MyPuzzles from './MyPuzzles.jsx';
-import PuzzleDisplay2 from './PuzzleDisplay2.jsx';
+import PuzzleDisplay from './PuzzleDisplay.jsx';
+import PlayPuzzles from './PlayPuzzles.jsx';
 
 import { useAppContext, AppProvider } from './AppContext.jsx';
 import { Navigate, Outlet } from 'react-router-dom';
@@ -44,16 +45,16 @@ const router = createBrowserRouter([
     element: <Analyze />,
   },
   {
-    path: "/puzzledisplay",
-    element: <PuzzleDisplay2 />,
-  },
-  {
     element: <ProtectedRoutes />,
     children: [
       {
         path: "/mypuzzles",
         element: <MyPuzzles />,
       },
+      {
+        path: "/playpuzzles",
+        element: <PlayPuzzles />,
+      }
     ],
   },
 ]);
