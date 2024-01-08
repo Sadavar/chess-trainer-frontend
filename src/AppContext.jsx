@@ -8,8 +8,6 @@ export const AppProvider = ({ children }) => {
     const [selected_games_analyze, setSelectedGamesAnalyze] = useState([]);
 
     const [puzzle_counter_play, setPuzzleCounterPlay] = useState(0);
-    const [selected_games_play, setSelectedGamesPlay] = useState([]);
-
     const [puzzles_array_play, setPuzzlesArrayPlay] = useState([]);
 
     console.log("setting App Context");
@@ -19,7 +17,6 @@ export const AppProvider = ({ children }) => {
             puzzle_counter_analyze, setPuzzleCounterAnalyze,
             selected_games_analyze, setSelectedGamesAnalyze,
             puzzle_counter_play, setPuzzleCounterPlay,
-            selected_games_play, setSelectedGamesPlay,
             puzzles_array_play, setPuzzlesArrayPlay
 
         }}>

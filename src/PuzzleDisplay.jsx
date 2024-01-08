@@ -222,7 +222,7 @@ export default function PuzzleDisplay({ puzzles_array, isPlaying }) {
                     <div className="flex justify-between"><div>Result: </div><div>{game_info.result}</div></div>
                     <div className="flex justify-between"><div>While Elo: </div><div>{game_info.white_elo}</div></div>
                     <div className="flex justify-between"><div>Black Elo: </div><div>{game_info.black_elo}</div></div>
-                    <div className="flex justify-between"><div>TimeControl: </div><div>{game_info.time_control}</div></div>
+                    <div className="flex justify-between"><div>Time Control: </div><div>{game_info.time_control}</div></div>
                     <div className="flex justify-between"><div>Link: </div><a href={game_info.link} className="text-blue-400 hover:text-blue-500">Game Link</a></div>
                 </div>
             )
@@ -244,11 +244,17 @@ export default function PuzzleDisplay({ puzzles_array, isPlaying }) {
                 <div className="col-span-4 flex flex-col gap-1 items-center outline-slate-100 outline rounded-lg shadow-lg">
                     {displayPuzzleStatus()}
                     <div className="hidden md:w-3/5 md:flex md:flex-col ">
+                        {isPlaying &&
+                            <h1 className="text-lg font-bold text-center">{puzzles_array[puzzle_counter_analyze].name}</h1>
+                        }
                         <h1 className="text-lg font-bold text-center">Game Info</h1>
+
                         {displayGameInfo()}
-                        <button onClick={() => openInNewTab("https://lichess.org/analysis/" + puzzles_array[puzzle_counter_analyze].start_FEN)} className="w-full flex gap-1 items-center justify-center h-9 px-4 text-md bg-sky-500 hover:bg-sky-600 transition-colors duration-150 text-white font-bold rounded-md">
-                            <FaSearchengin /> Analysis Board
-                        </button>
+                        <div className='pb-2'>
+                            <button onClick={() => openInNewTab("https://lichess.org/analysis/" + puzzles_array[puzzle_counter_analyze].start_FEN)} className="w-full flex gap-1 items-center justify-center h-9 px-4 text-md bg-sky-500 hover:bg-sky-600 transition-colors duration-150 text-white font-bold rounded-md">
+                                <FaSearchengin /> Analysis Board
+                            </button>
+                        </div>
                     </div>
                     <div className="mt-auto w-full h-16 flex justify-center items-center gap-2 bg-slate-200">
                         {displayPuzzleButtons()}

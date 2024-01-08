@@ -59,10 +59,28 @@ const router = createBrowserRouter([
   },
 ]);
 
-
-if (import.meta.env.NODE_ENV !== "development")
-  console.log = () => { };
-
+// const router = createBrowserRouter([
+//   {
+//     path: "/",
+//     element: <LandingPage />,
+//   },
+//   {
+//     path: "/login",
+//     element: <Login />,
+//   },
+//   {
+//     path: "/analyze",
+//     element: <Analyze />,
+//   },
+//   {
+//     path: "/mypuzzles",
+//     element: <MyPuzzles />,
+//   },
+//   {
+//     path: "/playpuzzles",
+//     element: <PlayPuzzles />,
+//   }
+// ]);
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

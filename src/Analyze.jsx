@@ -161,14 +161,27 @@ export default function Analyze() {
         var info = getGameInfo(pgn);
         setGameInfo(info);
 
-        const url = new URL('https://chess-trainer-python-b932ead51c12.herokuapp.com/getTactics');
-        // const url = new URL('http://127.0.0.1:5000/getTactics');
-        // const url = new URL('https://chess-trainer-python-2jxttd4vc-sadavars-projects.vercel.app' + '/getTactics');
-        // const url = new URL('https://web-production-27420.up.railway.app/getTactics');
-        var response;
         // get tactics
+
+
+        const url = new URL(import.meta.env.VITE_BACKEND_URL + '/getTactics');
+        // var payload = {
+        //     pgn: pgn,
+        //     username: username
+        // }
+        // try {
+        //     var response = await axios.post(url, payload)
+
+        //     if (response.status !== 200) throw new Error(response.status.toString())
+        //     if (!response.body) throw new Error('Response body does not exist')
+        // } catch (err) {
+        //     console.error(err);
+        //     return [];
+        // }
+
+
         try {
-            response = await fetch(
+            var response = await fetch(
                 url,
                 {
                     method: 'POST',
