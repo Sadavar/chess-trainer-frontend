@@ -163,24 +163,7 @@ export default function Analyze() {
         setGameInfo(info);
 
         // get tactics
-
-
         const url = new URL(import.meta.env.VITE_BACKEND_URL + '/getTactics');
-        // var payload = {
-        //     pgn: pgn,
-        //     username: username
-        // }
-        // try {
-        //     var response = await axios.post(url, payload)
-
-        //     if (response.status !== 200) throw new Error(response.status.toString())
-        //     if (!response.body) throw new Error('Response body does not exist')
-        // } catch (err) {
-        //     console.error(err);
-        //     return [];
-        // }
-
-
         try {
             var response = await fetch(
                 url,

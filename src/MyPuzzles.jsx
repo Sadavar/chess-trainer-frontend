@@ -17,64 +17,69 @@ export default function MyPuzzles() {
 
 
     function getPuzzles() {
-        // const url = new URL(import.meta.env.VITE_BACKEND_URL + '/getPuzzles')
-        // var payload = {
-        //     user: user
-        // }
-        // axios.post(url, payload)
-        //     .then((res) => {
-        //         console.log(res);
-        //         var data = res.data;
-        //         setPuzzles(data);
-        //     })
-        //     .catch((err) => {
-        //         console.log(err);
-        //     })
+        const url = new URL(import.meta.env.VITE_BACKEND_URL + '/getPuzzles')
+        var payload = {
+            user: user
+        }
+        var data;
+        axios.post(url, payload)
+            .then((res) => {
+                console.error("res:")
+                console.error(res);
+                data = res.data;
+                if (!data) return;
+                setPuzzles(data);
+            })
+            .catch((err) => {
+                console.error(err);
+                return;
+            })
 
-        var fake_data = [
-            {
-                "start_FEN": "rnbqk2r/p1p3p1/5n1p/1pbp2B1/3NP3/2N5/PPP1QPPP/R4RK1 w - - 0 12",
-                "end_FEN": "rnbqk2r/p1p3p1/5n1p/1pbP2B1/3N4/2N5/PPP1QPPP/R4RK1 b - - 0 12",
-                "turn_color": "white",
-                "name": "2024-01-07 03:31:59",
-                "game_info": {
-                    "black": "johnr282",
-                    "black_elo": "1194",
-                    "date": "2023.12.04",
-                    "link": "https://www.chess.com/game/live/95457569247",
-                    "result": "johnr282",
-                    "time_control": "300",
-                    "white": "sadavar",
-                    "white_elo": "1656"
-                },
-                "date_info": {
-                    "date": "2024-01-07",
-                    "timestamp": "03:31:59"
-                }
-            },
-            {
-                "start_FEN": "rnbqk2r/p1p3p1/5n1p/1pbp2B1/3NP3/2N5/PPP1QPPP/R4RK1 w - - 0 12",
-                "end_FEN": "rnbqk2r/p1p3p1/5n1p/1pbP2B1/3N4/2N5/PPP1QPPP/R4RK1 b - - 0 12",
-                "turn_color": "white",
-                "name": "Fake Puzzle",
-                "game_info": {
-                    "black": "johnr282",
-                    "black_elo": "1194",
-                    "date": "2023.12.04",
-                    "link": "https://www.chess.com/game/live/95457569247",
-                    "result": "johnr282",
-                    "time_control": "300",
-                    "white": "sadavar",
-                    "white_elo": "1656"
-                },
-                "date_info": {
-                    "date": "2024-01-07",
-                    "timestamp": "03:32:03"
-                }
-            }
-        ]
-        var data = fake_data;
+        // var fake_data = [
+        //     {
+        //         "start_FEN": "rnbqk2r/p1p3p1/5n1p/1pbp2B1/3NP3/2N5/PPP1QPPP/R4RK1 w - - 0 12",
+        //         "end_FEN": "rnbqk2r/p1p3p1/5n1p/1pbP2B1/3N4/2N5/PPP1QPPP/R4RK1 b - - 0 12",
+        //         "turn_color": "white",
+        //         "name": "2024-01-07 03:31:59",
+        //         "game_info": {
+        //             "black": "johnr282",
+        //             "black_elo": "1194",
+        //             "date": "2023.12.04",
+        //             "link": "https://www.chess.com/game/live/95457569247",
+        //             "result": "johnr282",
+        //             "time_control": "300",
+        //             "white": "sadavar",
+        //             "white_elo": "1656"
+        //         },
+        //         "date_info": {
+        //             "date": "2024-01-07",
+        //             "timestamp": "03:31:59"
+        //         }
+        //     },
+        //     {
+        //         "start_FEN": "rnbqk2r/p1p3p1/5n1p/1pbp2B1/3NP3/2N5/PPP1QPPP/R4RK1 w - - 0 12",
+        //         "end_FEN": "rnbqk2r/p1p3p1/5n1p/1pbP2B1/3N4/2N5/PPP1QPPP/R4RK1 b - - 0 12",
+        //         "turn_color": "white",
+        //         "name": "Fake Puzzle",
+        //         "game_info": {
+        //             "black": "johnr282",
+        //             "black_elo": "1194",
+        //             "date": "2023.12.04",
+        //             "link": "https://www.chess.com/game/live/95457569247",
+        //             "result": "johnr282",
+        //             "time_control": "300",
+        //             "white": "sadavar",
+        //             "white_elo": "1656"
+        //         },
+        //         "date_info": {
+        //             "date": "2024-01-07",
+        //             "timestamp": "03:32:03"
+        //         }
+        //     }
+        // ]
+        // var data = fake_data;
 
+        if (!data) return;
         for (let puzzle of data) {
             puzzle.isSelected = false;
         }
@@ -128,6 +133,10 @@ export default function MyPuzzles() {
     }
 
     useEffect(() => {
+        console.error("puzzles: ");
+        console.error(puzzles)
+        console.error("selected_puzzles: ");
+        console.error(selected_puzzles)
         displayMyPuzzles();
     }, [puzzles])
 

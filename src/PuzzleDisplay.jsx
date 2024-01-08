@@ -10,7 +10,6 @@ import { Link } from "react-router-dom";
 
 export default function PuzzleDisplay({ puzzles_array, isPlaying }) {
 
-
     const retryPuzzleRef = useRef({ retryPuzzle: () => { } });
     const [game_state, setGameState] = useState("");
 
@@ -97,7 +96,7 @@ export default function PuzzleDisplay({ puzzles_array, isPlaying }) {
             puzzle: puzzle
         }
         console.error(puzzle);
-        const url = new URL(import.meta.env.VITE_BACKEND_URL + '/savePuzzles')
+        const url = new URL(import.meta.env.VITE_BACKEND_URL + '/savePuzzle')
         axios.post(url, payload)
             .then((res) => {
                 console.log(res);
@@ -149,7 +148,7 @@ export default function PuzzleDisplay({ puzzles_array, isPlaying }) {
                         <FaRotateLeft /> Retry
                     </button>
                     {!isPlaying &&
-                        <button onClick={savePuzzle} className="flex gap-1 items-center h-9 px-4 text-md bg-sky-500 hover:bg-sky-600 transition-colors duration-150 text-white font-bold rounded-md">
+                        <button onClick={open} className="flex gap-1 items-center h-9 px-4 text-md bg-sky-500 hover:bg-sky-600 transition-colors duration-150 text-white font-bold rounded-md">
                             <FaSquarePlus /> Save
                         </button>
                     }
@@ -166,7 +165,7 @@ export default function PuzzleDisplay({ puzzles_array, isPlaying }) {
                         <FaRotateLeft /> Retry
                     </button>
                     {!isPlaying &&
-                        <button onClick={savePuzzle} className="flex gap-1 items-center h-9 px-4 text-md bg-sky-500 hover:bg-sky-600 transition-colors duration-150 text-white font-bold rounded-md">
+                        <button onClick={open} className="flex gap-1 items-center h-9 px-4 text-md bg-sky-500 hover:bg-sky-600 transition-colors duration-150 text-white font-bold rounded-md">
                             <FaSquarePlus /> Save
                         </button>
                     }
@@ -207,6 +206,12 @@ export default function PuzzleDisplay({ puzzles_array, isPlaying }) {
                     retryPuzzleRef={retryPuzzleRef}
                     setGameStateRef={setGameState}
                 />
+            )
+        } else {
+            return (
+                <div className="flex justify-center items-center h-96">
+                    <h1 className="text-2xl font-bold flex items-center gap-2"> <FaChessBoard />  Loading...</h1>
+                </div>
             )
         }
     }
