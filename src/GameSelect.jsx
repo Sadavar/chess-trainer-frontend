@@ -208,7 +208,7 @@ export default function GameSelect() {
             <div className="flex flex-row justify-center gap-2">
                 <div className="flex flex-row justify-center gap-2">
                     <TextInput
-                        placeholder="Chess.com Username"
+                        placeholder="Enter Chess.com Username"
                         value={username}
                         onChange={(event) => setUsername(event.currentTarget.value)}
                         size="md"
@@ -223,7 +223,7 @@ export default function GameSelect() {
             <div className="pt-5">
                 {games.length > 0 &&
                     <div className="w-screen flex flex-col items-center">
-                        <div className="outline-slate-100 outline rounded-md grid grid-cols-1 shadow-lg">
+                        <div className="outline-slate-100 outline rounded-md grid grid-cols-1 shadow-lg hover:shadow-2xl transition-shadow duration-130">
                             {/* {items} */}
                             <Table>
                                 <Table.Thead>

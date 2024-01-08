@@ -14,21 +14,21 @@ export default function PuzzleDisplay({ puzzles_array, isPlaying }) {
     const retryPuzzleRef = useRef({ retryPuzzle: () => { } });
     const [game_state, setGameState] = useState("");
 
-    const { puzzle_counter_analyze, setPuzzleCounterAnalyze } = useAppContext();
+    const { puzzle_counter, setPuzzleCounter } = useAppContext();
     const { user } = useAppContext();
 
     useEffect(() => {
         console.error("resetting puzzle counter")
-        setPuzzleCounterAnalyze(0);
+        setPuzzleCounter(0);
     }, [puzzles_array])
 
     function nextPuzzle() {
-        if (puzzle_counter_analyze === puzzles_array.length - 1) {
-            setPuzzleCounterAnalyze(0);
+        if (puzzle_counter === puzzles_array.length - 1) {
+            setPuzzleCounter(0);
             return;
         }
         console.log("next puzzle");
-        setPuzzleCounterAnalyze(puzzle_counter_analyze + 1);
+        setPuzzleCounter(puzzle_counter + 1);
     }
 
     const retryPuzzle = () => {
@@ -85,7 +85,7 @@ export default function PuzzleDisplay({ puzzles_array, isPlaying }) {
             timestamp: timestamp
         }
 
-        var puzzle = puzzles_array[puzzle_counter_analyze]
+        var puzzle = puzzles_array[puzzle_counter]
         if (puzzle_name === "") {
             puzzle.name = date_info.date + " " + date_info.timestamp;
         } else {
@@ -124,7 +124,7 @@ export default function PuzzleDisplay({ puzzles_array, isPlaying }) {
             )
         }
         else if (game_state === "Playing") {
-            var turn = puzzles_array[puzzle_counter_analyze].turn_color;
+            var turn = puzzles_array[puzzle_counter].turn_color;
             const capital_first_letter = turn.charAt(0).toUpperCase();
             const remaining_letters = turn.slice(1);
             const capital_turn = capital_first_letter + remaining_letters;
@@ -193,17 +193,17 @@ export default function PuzzleDisplay({ puzzles_array, isPlaying }) {
     }
 
     function displayPuzzle() {
-        console.error("puzzle_counter_analyze: " + puzzle_counter_analyze)
+        console.error("puzzle_counter: " + puzzle_counter)
         console.error("puzzles_array: ")
         console.error(puzzles_array)
-        console.error("puzzles_array[puzzle_counter_analyze]: ")
-        console.error(puzzles_array[puzzle_counter_analyze])
-        if (puzzles_array[puzzle_counter_analyze] !== undefined) {
+        console.error("puzzles_array[puzzle_counter]: ")
+        console.error(puzzles_array[puzzle_counter])
+        if (puzzles_array[puzzle_counter] !== undefined) {
             return (
                 <Puzzle
-                    start_FEN={puzzles_array[puzzle_counter_analyze].start_FEN}
-                    end_FEN={puzzles_array[puzzle_counter_analyze].end_FEN}
-                    turn_color={puzzles_array[puzzle_counter_analyze].turn_color}
+                    start_FEN={puzzles_array[puzzle_counter].start_FEN}
+                    end_FEN={puzzles_array[puzzle_counter].end_FEN}
+                    turn_color={puzzles_array[puzzle_counter].turn_color}
                     retryPuzzleRef={retryPuzzleRef}
                     setGameStateRef={setGameState}
                 />
@@ -212,7 +212,7 @@ export default function PuzzleDisplay({ puzzles_array, isPlaying }) {
     }
 
     function displayGameInfo() {
-        var game_info = puzzles_array[puzzle_counter_analyze].game_info;
+        var game_info = puzzles_array[puzzle_counter].game_info;
         if (game_info !== undefined) {
             return (
                 <div className="pb-5">
@@ -245,13 +245,13 @@ export default function PuzzleDisplay({ puzzles_array, isPlaying }) {
                     {displayPuzzleStatus()}
                     <div className="hidden md:w-3/5 md:flex md:flex-col ">
                         {isPlaying &&
-                            <h1 className="text-lg font-bold text-center">{puzzles_array[puzzle_counter_analyze].name}</h1>
+                            <h1 className="text-lg font-bold text-center">{puzzles_array[puzzle_counter].name}</h1>
                         }
                         <h1 className="text-lg font-bold text-center">Game Info</h1>
 
                         {displayGameInfo()}
                         <div className='pb-2'>
-                            <button onClick={() => openInNewTab("https://lichess.org/analysis/" + puzzles_array[puzzle_counter_analyze].start_FEN)} className="w-full flex gap-1 items-center justify-center h-9 px-4 text-md bg-sky-500 hover:bg-sky-600 transition-colors duration-150 text-white font-bold rounded-md">
+                            <button onClick={() => openInNewTab("https://lichess.org/analysis/" + puzzles_array[puzzle_counter].start_FEN)} className="w-full flex gap-1 items-center justify-center h-9 px-4 text-md bg-sky-500 hover:bg-sky-600 transition-colors duration-150 text-white font-bold rounded-md">
                                 <FaSearchengin /> Analysis Board
                             </button>
                         </div>

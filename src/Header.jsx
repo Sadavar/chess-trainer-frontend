@@ -63,7 +63,6 @@ function Header() {
                         <Link to="/mypuzzles" className={classes.link}> My Puzzles </Link>
                         {loginandlogoutButton()}
                     </Group>
-
                     <Burger opened={drawerOpened} onClick={toggleDrawer} hiddenFrom="sm" />
                 </Group>
             </header>
@@ -79,7 +78,6 @@ function Header() {
             >
                 <ScrollArea h={`calc(100vh - ${rem(80)})`} mx="-md">
                     <Divider my="sm" />
-
                     <Link to="/" className={classes.link}> Home </Link>
                     <Link to="/analyze" className={classes.link}> Analyze </Link>
                     <Link to="/mypuzzles" className={classes.link}> My Puzzles </Link>

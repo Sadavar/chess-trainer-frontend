@@ -4,7 +4,7 @@ const AppContext = createContext("");
 
 export const AppProvider = ({ children }) => {
     const [user, setUser] = useState(null);
-    const [puzzle_counter_analyze, setPuzzleCounterAnalyze] = useState(0);
+    const [puzzle_counter, setPuzzleCounter] = useState(0);
     const [selected_games_analyze, setSelectedGamesAnalyze] = useState([]);
 
     const [puzzle_counter_play, setPuzzleCounterPlay] = useState(0);
@@ -14,11 +14,10 @@ export const AppProvider = ({ children }) => {
     return (
         <AppContext.Provider value={{
             user, setUser,
-            puzzle_counter_analyze, setPuzzleCounterAnalyze,
+            puzzle_counter, setPuzzleCounter,
             selected_games_analyze, setSelectedGamesAnalyze,
             puzzle_counter_play, setPuzzleCounterPlay,
             puzzles_array_play, setPuzzlesArrayPlay
-
         }}>
             {children}
         </AppContext.Provider>

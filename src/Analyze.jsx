@@ -5,6 +5,7 @@ import axios from 'axios';
 import { Chart as ChartJS, registerables } from 'chart.js';
 import { Chart } from 'react-chartjs-2'
 import Header from './Header.jsx';
+import Header2 from './Header2.jsx';
 
 import { Group } from '@mantine/core';
 import { Button, Card, Badge } from '@mantine/core';
